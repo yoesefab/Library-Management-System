@@ -1,0 +1,9 @@
+node_modules/
+dist/
+artifacts/
+src/legacy/
+worker/
+tests/
+test-results/
+playwright-report/
+package-lock.json

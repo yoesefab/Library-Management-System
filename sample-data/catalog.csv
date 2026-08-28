@@ -1,0 +1,16 @@
+sku,isbn,title,description,language,selling_price,purchase_cost,minimum_stock_threshold,supplier_lead_time_days,category,publisher,supplier,authors,initial_stock,scenario
+LIV-FR-001,9789954000001,Les Rues de Casablanca,Roman urbain synthétique situé à Casablanca.,fr,129,72,20,7,Littérature,Éditions Atlas Démo,Distribution Maghreb Démo,Nadia El Mansouri,180,Meilleure vente et stock faible après import
+LIV-FR-002,9789954000002,Le Jardin des Histoires,Recueil littéraire synthétique à rotation lente.,fr,98,55,10,10,Littérature,Éditions Atlas Démo,Distribution Maghreb Démo,Yassine Amrani,40,Rotation lente
+TEC-FR-003,9789954000003,Java Moderne en Pratique,Guide synthétique de programmation Java.,fr,185,110,20,12,Informatique,TechLivres Démo,Savoir Numérique Démo,Salma Berrada,150,Ventes régulières
+LIV-AR-004,9789954000004,حكايات من الدار البيضاء,مجموعة قصصية تجريبية ببيانات اصطناعية.,ar,85,44,8,8,Littérature,دار المعرفة التجريبية,Distribution Maghreb Démo,أمين العلوي,26,Rupture de stock après import
+JEU-FR-005,9789954000005,Premières Lectures du Maroc,Livre jeunesse synthétique.,fr,64,32,15,6,Jeunesse,Jeunesse Horizon Démo,Livres Jeunesse Démo,Imane Chafik,70,Ventes jeunesse régulières
+JEU-AR-006,9789954000006,مغامرات صغيرة,كتاب أطفال اصطناعي متعدد اللغات.,ar,58,29,8,6,Jeunesse,Jeunesse Horizon Démo,Livres Jeunesse Démo,ليلى بناني,30,Jeunesse arabe
+LIV-EN-007,9789954000007,Casablanca Through Time,Synthetic English-language cultural title.,en,175.5,96,8,14,Sciences humaines,Atlantic Books Demo,Savoir Numérique Démo,Adam Clarke,60,Demande anglophone modérée
+LIV-FR-008,9789954000008,Mémoire de l'Atlas,Essai historique synthétique.,fr,145,82,10,9,Sciences humaines,Éditions Atlas Démo,Distribution Maghreb Démo,Karim Idrissi,60,Ventes périodiques
+TEC-EN-009,9789954000009,Practical Data Engineering,Synthetic technical reference in English.,en,240,150,6,15,Informatique,TechLivres Démo,Savoir Numérique Démo,Emily Stone,30,Produit technique à faible volume
+SH-FR-010,9789954000010,Économie Marocaine Simplifiée,Introduction synthétique à l'économie.,fr,155,88,8,11,Sciences humaines,Éditions Atlas Démo,Distribution Maghreb Démo,Omar Tazi,25,Ventes occasionnelles
+SH-AR-011,9789954000011,مدخل إلى تاريخ المغرب,مرجع تاريخي اصطناعي.,ar,120,66,6,10,Sciences humaines,دار المعرفة التجريبية,Distribution Maghreb Démo,سارة الإدريسي,20,Ventes occasionnelles arabophones
+SCO-FR-012,9789954000012,Réussir les Mathématiques au Lycée,Manuel scolaire synthétique à forte saisonnalité.,fr,42,22,15,5,Scolaire,Scolaire Réussite Démo,Fournitures Éducation Démo,Collectif Pédagogique Démo,90,Pic de demande en août et septembre
+SCO-AR-013,9789954000013,دليل الرياضيات المدرسي,كتاب مدرسي اصطناعي موسمي.,ar,39,20,12,5,Scolaire,Scolaire Réussite Démo,Fournitures Éducation Démo,الفريق التربوي التجريبي,50,Saisonnalité scolaire arabe
+DEAD-FR-014,9789954000014,Encyclopédie des Arts Oubliés,Produit synthétique sans vente récente sur la période.,fr,310,205,5,20,Arts,Éditions Atlas Démo,Distribution Maghreb Démo,Claire Martin,36,Une vente ancienne puis stock dormant
+NEW-EN-015,9789954000015,Modern Book Retail Analytics,New synthetic title with insufficient history.,en,210,128,7,12,Informatique,Atlantic Books Demo,Savoir Numérique Démo,Daniel Brooks,25,Historique insuffisant pour la prévision

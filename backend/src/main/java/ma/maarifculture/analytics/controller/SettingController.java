@@ -1,0 +1,3 @@
+package ma.maarifculture.analytics.controller;
+import jakarta.validation.Valid;import java.util.List;import ma.maarifculture.analytics.dto.SettingDtos.*;import ma.maarifculture.analytics.service.SettingService;import org.springframework.security.access.prepost.PreAuthorize;import org.springframework.web.bind.annotation.*;
+@RestController @RequestMapping("/api/admin/settings") @PreAuthorize("hasRole('ADMINISTRATOR')") public class SettingController {private final SettingService service;public SettingController(SettingService s){service=s;}@GetMapping public List<SettingResponse> list(){return service.list();}@PutMapping("/{key}")public SettingResponse update(@PathVariable String key,@Valid @RequestBody SettingRequest request){return service.update(key,request);}}

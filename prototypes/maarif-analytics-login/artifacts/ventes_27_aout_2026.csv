@@ -1,0 +1,7 @@
+order_reference,sale_date,source,customer_city,sku,quantity,unit_price_mad,discount_percent
+CMD-WEB-2026-4187,2026-08-27 18:42,Site web,Rabat,LIV-000231,2,58.00,0
+CMD-WEB-2026-4188,2026-08-27 18:47,Site web,Casablanca,LIV-000538,1,92.00,5
+CMD-BTQ-2026-4212,2026-08-31 25:10,Boutique Maarif,Casablanca,LIV-000704,1,94.00,0
+CMD-WEB-2026-4187,2026-08-27 19:12,Site web,Tanger,LIV-000619,1,375.10,0
+CMD-TEL-2026-4251,2026-08-27 19:38,Téléphone,Fès,LIV-009999,1,78.00,0
+CMD-BTQ-2026-4297,2026-08-27 20:06,Boutique Maarif,Casablanca,LIV-000184,0,78.00,0
