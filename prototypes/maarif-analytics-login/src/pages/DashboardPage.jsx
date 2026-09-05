@@ -14,7 +14,6 @@ import {
   ChartBar,
   ChartLineUp,
   CheckCircle,
-  CircleNotch,
   CloudArrowUp,
   Cube,
   CurrencyDollar,
@@ -62,6 +61,7 @@ import {
   FILTER_DEFINITIONS,
 } from "../shared/dashboardFilters.jsx";
 import { DashboardFilter } from "../shared/DashboardFilter.jsx";
+import { Button } from "../shared/Button.jsx";
 
 const KPI_DATA = [
   {
@@ -356,65 +356,6 @@ function StockRiskTable({ onNavigateProducts }) {
   );
 }
 
-function DashboardStates() {
-  const [retrying, setRetrying] = useState(false);
-
-  const retry = () => {
-    setRetrying(true);
-    window.setTimeout(() => setRetrying(false), 900);
-  };
-
-  return (
-    <section
-      aria-labelledby="dashboard-states-title"
-      className="dashboard-states"
-    >
-      <h2 id="dashboard-states-title">États des données</h2>
-      <div className="dashboard-state-grid">
-        <article
-          aria-busy="true"
-          className="dashboard-state-card loading-state-card"
-        >
-          <h3>Chargement</h3>
-          <div aria-hidden="true" className="skeleton-table">
-            {[0, 1, 2, 3].map((row) => (
-              <span key={row}>
-                <i />
-                <i />
-                <i />
-              </span>
-            ))}
-          </div>
-        </article>
-        <article className="dashboard-state-card empty-state-card">
-          <h3>Aucun résultat pour ces filtres</h3>
-          <Archive aria-hidden="true" />
-          <p>Aucun résultat pour ces filtres.</p>
-          <small>Essayez en modifiant vos critères.</small>
-        </article>
-        <article className="dashboard-state-card error-state-card" role="alert">
-          <h3>Impossible de charger les données</h3>
-          <div>
-            <Warning aria-hidden="true" />
-            <p>
-              <strong>Impossible de charger les données.</strong>
-              <small>Veuillez réessayer.</small>
-            </p>
-            <button disabled={retrying} onClick={retry} type="button">
-              {retrying ? (
-                <CircleNotch aria-hidden="true" className="spinner" />
-              ) : (
-                <ArrowClockwise aria-hidden="true" />
-              )}
-              {retrying ? "Chargement…" : "Réessayer"}
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
-  );
-}
-
 export function DashboardContent({ onNavigateProducts }) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
@@ -432,14 +373,14 @@ export function DashboardContent({ onNavigateProducts }) {
             value={filters[definition.key]}
           />
         ))}
-        <button
+        <Button
           className="reset-filters"
           onClick={() => setFilters(DEFAULT_FILTERS)}
-          type="button"
+          variant="outline"
         >
-          <ArrowClockwise aria-hidden="true" />
+          <ArrowClockwise aria-hidden="true" data-icon="inline-start" />
           Réinitialiser
-        </button>
+        </Button>
       </section>
 
       <section aria-label="Indicateurs clés" className="kpi-grid">
@@ -501,8 +442,6 @@ export function DashboardContent({ onNavigateProducts }) {
         />
         <StockRiskTable onNavigateProducts={onNavigateProducts} />
       </section>
-
-      <DashboardStates />
     </div>
   );
 }

@@ -4,10 +4,23 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+### Prototype 2 shadcn-admin
+
+- Ajout de `prototype2`, clone adapté de `satnaing/shadcn-admin`, avec les parcours complets du prototype Maarif Analytics remontés dans son shell responsive et son routage TanStack.
+- Conservation des données synthétiques marocaines, des montants en MAD, des dates `Africa/Casablanca`, des permissions simulées et des interactions métier du prototype approuvé.
+- Ajout d’une connexion, d’une navigation, d’un profil et de libellés français cohérents avec l’identité Maarif Culture.
+
 ### Réorganisation du prototype
 
 - Séparation du monolithe React `prototypes/maarif-analytics-login/src/App.jsx` en fichiers de pages, layout authentifié et modules partagés, sans modification du rendu ni des parcours existants.
 - Mutualisation des filtres du tableau de bord et des rapports afin de préserver le rendu autonome de chaque page après l’extraction.
+- Simplification de la page de connexion du prototype en une vue centrée contenant uniquement le formulaire, sans le panneau d’aperçu des états.
+- Suppression du bloc démonstratif des états de données au bas du tableau de bord du prototype.
+- Remplacement du menu de période par un sélecteur de plage de dates avec deux calendriers, saisie directe, raccourcis et validation explicite.
+- Remplacement des filtres natifs Catégorie, Langue, Auteur et Éditeur par des sélecteurs shadcn fondés sur Base UI.
+- Adoption du bouton shadcn fondé sur Base UI pour l’action de réinitialisation des filtres du tableau de bord et des rapports.
+- Ajout d’un avatar shadcn fondé sur Base UI avec initiales de secours dans l’identité de l’utilisatrice de la barre supérieure.
+- Transformation de l’identité de l’utilisatrice en menu de profil accessible regroupant Administration, Alertes et Déconnexion, avec suppression de l’action de déconnexion séparée.
 
 ### Restauration du prototype
 

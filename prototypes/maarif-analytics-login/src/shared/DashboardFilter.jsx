@@ -1,26 +1,16 @@
-import { CaretDown } from "@phosphor-icons/react";
+import { DateRangePicker } from "./DateRangePicker.jsx";
+import { FilterSelect } from "./FilterSelect.jsx";
 
 export function DashboardFilter({ definition, value, onChange }) {
-  const Icon = definition.icon;
+  if (definition.key === "period") {
+    return (
+      <DateRangePicker
+        label={definition.label}
+        onChange={(nextValue) => onChange(definition.key, nextValue)}
+        value={value}
+      />
+    );
+  }
 
-  return (
-    <label className={`dashboard-filter dashboard-filter--${definition.key}`}>
-      <span>{definition.label}</span>
-      <span className="dashboard-filter-control">
-        {Icon ? <Icon aria-hidden="true" /> : null}
-        <select
-          aria-label={definition.label}
-          onChange={(event) => onChange(definition.key, event.target.value)}
-          value={value}
-        >
-          {definition.options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-        <CaretDown aria-hidden="true" className="dashboard-filter-caret" />
-      </span>
-    </label>
-  );
+  return <FilterSelect definition={definition} onChange={onChange} value={value} />;
 }

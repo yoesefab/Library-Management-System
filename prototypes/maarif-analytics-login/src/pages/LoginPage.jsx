@@ -1,63 +1,9 @@
 import { useEffect, useId, useState } from "react";
 import {
-  Archive,
-  ArrowDown,
-  ArrowLeft,
-  ArrowClockwise,
-  ArrowRight,
-  ArrowUp,
-  Bell,
-  Books,
   BookOpen,
-  CalendarBlank,
-  CaretDown,
-  ChartBar,
-  ChartLineUp,
-  CheckCircle,
   CircleNotch,
-  CloudArrowUp,
-  Cube,
-  CurrencyDollar,
-  DownloadSimple,
-  FileText,
-  FileCsv,
-  FloppyDisk,
-  GearSix,
-  Eye,
-  List,
-  MapPin,
-  MagnifyingGlass,
-  Key,
-  PencilSimple,
-  Plus,
-  Prohibit,
-  ShoppingBagOpen,
-  ShoppingCart,
-  Shield,
-  SignOut,
-  TrendUp,
-  Truck,
-  User,
-  UserPlus,
-  Users,
-  Warning,
   WarningCircle,
-  X,
 } from "@phosphor-icons/react";
-import {
-  CartesianGrid,
-  Cell,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-
-
 import { ErrorMessage } from "../shared/ErrorMessage.jsx";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -102,81 +48,6 @@ function PasswordField({
       </div>
       {error ? <ErrorMessage id={errorId}>{error}</ErrorMessage> : null}
     </div>
-  );
-}
-
-function PreviewInput({ children, invalid = false, password = false }) {
-  return (
-    <div
-      aria-invalid={invalid || undefined}
-      className={`preview-input${invalid ? " is-invalid" : ""}${password ? " has-action" : ""}`}
-    >
-      <span>{children}</span>
-      {password ? (
-        <span className="preview-action">Afficher le mot de passe</span>
-      ) : null}
-    </div>
-  );
-}
-
-function StatePreview() {
-  return (
-    <aside
-      aria-label="Aperçu des états du formulaire"
-      className="state-preview"
-    >
-      <section className="state-section">
-        <h2>Validation — Adresse e-mail invalide</h2>
-        <div className="preview-field">
-          <span className="preview-label">Adresse e-mail</span>
-          <PreviewInput invalid>prenom.nom@maarifculture</PreviewInput>
-          <ErrorMessage>Saisissez une adresse e-mail valide.</ErrorMessage>
-        </div>
-      </section>
-
-      <section className="state-section">
-        <h2>Validation — Mot de passe requis</h2>
-        <div className="preview-field">
-          <span className="preview-label">Adresse e-mail</span>
-          <PreviewInput>prenom.nom@maarifculture.ma</PreviewInput>
-        </div>
-        <div className="preview-field">
-          <span className="preview-label">Mot de passe</span>
-          <PreviewInput invalid password />
-          <ErrorMessage>Le mot de passe est requis.</ErrorMessage>
-        </div>
-      </section>
-
-      <section className="state-section">
-        <h2>Erreur d’authentification</h2>
-        <div className="authentication-error" role="alert">
-          <WarningCircle aria-hidden="true" weight="fill" />
-          <span>Adresse e-mail ou mot de passe incorrect.</span>
-        </div>
-        <div className="preview-field">
-          <span className="preview-label">Adresse e-mail</span>
-          <PreviewInput>prenom.nom@maarifculture.ma</PreviewInput>
-        </div>
-        <div className="preview-field">
-          <span className="preview-label">Mot de passe</span>
-          <PreviewInput invalid password>
-            ••••••••••••
-          </PreviewInput>
-        </div>
-      </section>
-
-      <section className="state-section loading-section">
-        <h2>État de chargement</h2>
-        <button
-          className="submit-button preview-loading"
-          disabled
-          type="button"
-        >
-          <CircleNotch aria-hidden="true" className="spinner" />
-          <span>Connexion en cours…</span>
-        </button>
-      </section>
-    </aside>
   );
 }
 
@@ -318,10 +189,7 @@ export function LoginPage() {
             </form>
           </div>
         </section>
-
-        <StatePreview />
       </div>
     </main>
   );
 }
-

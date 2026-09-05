@@ -34,7 +34,6 @@ import {
   ShoppingBagOpen,
   ShoppingCart,
   Shield,
-  SignOut,
   TrendUp,
   Truck,
   User,
@@ -74,6 +73,7 @@ import { ReportsPage } from "./ReportsPage.jsx";
 import { AdministrationPage } from "./AdministrationPage.jsx";
 import { SystemStatePage } from "./SystemStatePage.jsx";
 import { CATALOG_PRODUCTS } from "../shared/catalogData.js";
+import { ProfileMenu } from "../shared/ProfileMenu.jsx";
 
 const NAV_ITEMS = [
   { id: "dashboard", label: "Tableau de bord", icon: ChartBar },
@@ -275,19 +275,15 @@ export function AuthenticatedLayout({ onLogout }) {
               </span>
             </button>
 
-            <div aria-label="Utilisateur actuel" className="current-user">
-              <span className="current-user-name">Nadia El Mansouri</span>
-              <span className="current-user-role">
-                {activePage === "Administration"
+            <ProfileMenu
+              onLogout={onLogout}
+              onNavigate={selectPage}
+              role={
+                activePage === "Administration"
                   ? "Administratrice"
-                  : "Gestionnaire"}
-              </span>
-            </div>
-
-            <button className="logout-action" onClick={onLogout} type="button">
-              <SignOut aria-hidden="true" />
-              <span>Se déconnecter</span>
-            </button>
+                  : "Gestionnaire"
+              }
+            />
           </div>
         </header>
 
@@ -369,4 +365,3 @@ export function AuthenticatedLayout({ onLogout }) {
     </main>
   );
 }
-

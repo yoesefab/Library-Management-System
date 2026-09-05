@@ -62,6 +62,7 @@ import {
   FILTER_DEFINITIONS,
 } from "../shared/dashboardFilters.jsx";
 import { DashboardFilter } from "../shared/DashboardFilter.jsx";
+import { Button } from "../shared/Button.jsx";
 
 const REPORT_OPTIONS = [
   {
@@ -246,17 +247,17 @@ export function ReportsPage() {
               value={filters[definition.key]}
             />
           ))}
-          <button
+          <Button
             className="reset-filters report-reset-filters"
             onClick={() => {
               setFilters(DEFAULT_FILTERS);
               setExportState(null);
             }}
-            type="button"
+            variant="outline"
           >
-            <ArrowClockwise aria-hidden="true" />
+            <ArrowClockwise aria-hidden="true" data-icon="inline-start" />
             Réinitialiser
-          </button>
+          </Button>
         </div>
       </section>
 
