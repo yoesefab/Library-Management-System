@@ -108,7 +108,7 @@ class BackendEndToEndApiTest {
         JsonNode duplicatePreview = preview(session, "sales-valid.csv");
         assertThat(duplicatePreview.path("id").asLong()).isEqualTo(importId);
 
-        mockMvc.perform(get("/api/dashboard")
+        MvcResult dashboard = mockMvc.perform(get("/api/dashboard")
                         .param("start", "2025-09-01T00:00:00Z")
                         .param("end", "2026-08-27T23:59:59Z")
                         .session(session))
@@ -116,7 +116,11 @@ class BackendEndToEndApiTest {
                 .andExpect(jsonPath("$.numberOfOrders").value(52))
                 .andExpect(jsonPath("$.unitsSold").value(585))
                 .andExpect(jsonPath("$.totalRevenue", greaterThan(0.0)))
-                .andExpect(jsonPath("$.bestsellingProducts[0].sku").value("LIV-FR-001"));
+                .andExpect(jsonPath("$.bestsellingProducts[0].sku").value("LIV-FR-001"))
+                .andReturn();
+        JsonNode dashboardJson = objectMapper.readTree(dashboard.getResponse().getContentAsByteArray());
+        assertThat(metricTotal(dashboardJson, "salesByCategory")).isEqualByComparingTo("585");
+        assertThat(metricTotal(dashboardJson, "salesByLanguage")).isEqualByComparingTo("585");
 
         mockMvc.perform(post("/api/alerts/refresh").session(session).with(csrf()))
                 .andExpect(status().isOk())
@@ -214,6 +218,14 @@ class BackendEndToEndApiTest {
             }
         }
         throw new AssertionError("Produit absent de l'inventaire : " + sku);
+    }
+
+    private java.math.BigDecimal metricTotal(JsonNode dashboard, String field) {
+        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+        for (JsonNode metric : dashboard.path(field)) {
+            total = total.add(metric.path("value").decimalValue());
+        }
+        return total;
     }
 
     private Path sampleFile(String name) {

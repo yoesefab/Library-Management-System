@@ -4,6 +4,11 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Suppression des comparaisons affichées sous les indicateurs du tableau de bord de `prototype2`.
+- Correction des répartitions du tableau de bord par catégorie et langue afin qu'elles affichent les exemplaires vendus, conformément à leurs libellés.
+- Autorisation des origines locales du prototype sur le port 5174 afin que l'authentification et les appels API fonctionnent depuis l'interface active.
+- Correction des axes des courbes pour les données réelles et du chargement des lignes de commande dans `prototype2`.
+
 ### Prototype 2 shadcn-admin
 
 - Ajout de `prototype2`, clone adapté de `satnaing/shadcn-admin`, avec les parcours complets du prototype Maarif Analytics remontés dans son shell responsive et son routage TanStack.

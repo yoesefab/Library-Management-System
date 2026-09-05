@@ -18,4 +18,4 @@ Toutes les mesures utilisent les commandes `COMPLETED`, la plage `[dateFrom, dat
 | Vente lente | seuil configurable de faible demande sur une fenêtre documentée |
 | Stock mort | stock positif sans vente pendant une durée configurable |
 
-Les ventes par catégorie/langue et tendances utilisent les mêmes lignes éligibles, regroupées par dimension et période. Les seuils techniques par défaut sont 90 jours sans vente pour `SLOW_MOVING` et 180 jours pour `DEAD_STOCK`; ils sont configurables dans `app_setting` et doivent encore être validés avec le métier.
+Les ventes par catégorie/langue totalisent les exemplaires vendus (`Σ quantity`) sur les mêmes lignes éligibles. Les tendances regroupent le chiffre d'affaires, les commandes et les unités par jour sur la période. Les seuils techniques par défaut sont 90 jours sans vente pour `SLOW_MOVING` et 180 jours pour `DEAD_STOCK`; ils sont configurables dans `app_setting` et doivent encore être validés avec le métier.

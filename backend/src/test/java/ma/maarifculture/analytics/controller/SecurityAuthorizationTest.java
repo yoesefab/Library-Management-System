@@ -34,6 +34,14 @@ class SecurityAuthorizationTest {
         mockMvc.perform(get("/api/products")).andExpect(status().isUnauthorized());
     }
 
+    @Test void allowsTheLocalPrototypeOrigin() throws Exception {
+        mockMvc.perform(options("/api/auth/login")
+                        .header("Origin", "http://127.0.0.1:5174")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:5174"));
+    }
+
     @Test void createsHttpSessionAndEnforcesFinancialRole() throws Exception {
         MockHttpSession session=(MockHttpSession)mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
