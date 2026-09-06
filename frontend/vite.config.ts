@@ -1,48 +1,55 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+/// <reference types="vitest/config" />
+import path from 'path'
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import { playwright } from '@vitest/browser-playwright'
 
+// https://vite.dev/config/
 export default defineConfig({
-  build: {
-    outDir: "dist/client",
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes("/node_modules/@radix-ui/")) return "radix-ui";
-          if (id.includes("/node_modules/@tanstack/")) return "query";
-          if (
-            id.includes("/node_modules/recharts/") ||
-            id.includes("/node_modules/d3-")
-          )
-            return "charts";
-          if (
-            id.includes("/node_modules/react-router") ||
-            id.includes("/node_modules/react-dom/") ||
-            id.endsWith("/node_modules/react/index.js")
-          )
-            return "react-vendor";
-          return undefined;
-        },
+  server: {
+    host: '127.0.0.1',
+    port: 5174,
+    strictPort: true,
+    proxy: {
+      '/api': {
+        target: process.env.MAARIF_API_TARGET ?? 'http://127.0.0.1:8080',
+        changeOrigin: true,
       },
     },
   },
+  plugins: [
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
-      "@": decodeURIComponent(new URL("./src", import.meta.url).pathname),
+      '@': path.resolve(__dirname, './src'),
     },
   },
-  optimizeDeps: { include: ["react", "react-dom/client"] },
-  server: {
-    host: "0.0.0.0",
-    allowedHosts: ["terminal.local"],
-    proxy: { "/api": "http://127.0.0.1:8080" },
-    warmup: { clientFiles: ["./src/main.tsx"] },
-  },
-  plugins: [react()],
   test: {
-    environment: "jsdom",
-    setupFiles: "./src/test/setup.ts",
-    css: true,
-    fileParallelism: false,
-    exclude: ["tests/**", "e2e/**", "node_modules/**", "dist/**"],
+    silent: 'passed-only',
+    unstubEnvs: true,
+    browser: {
+      enabled: true,
+      provider: playwright(),
+      instances: [{ browser: 'chromium' }],
+    },
+    coverage: {
+      // include: ['src/**/*.{js,jsx,ts,tsx}'], // Uncomment to expand the report to all src/**/* so untested modules appear as 0% coverage.
+      exclude: [
+        'src/components/ui/**',
+        'src/assets/**',
+        'src/tanstack-table.d.ts',
+        'src/routeTree.gen.ts',
+        'src/test-utils/**',
+        'src/routes/**',
+      ],
+    },
   },
-});
+})

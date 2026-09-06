@@ -1,38 +1,59 @@
-import js from "@eslint/js";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+import globals from 'globals'
+import js from '@eslint/js'
+import pluginQuery from '@tanstack/eslint-plugin-query'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig } from 'eslint/config'
+import tseslint from 'typescript-eslint'
 
-export default tseslint.config(
+export default defineConfig(
+  { ignores: ['dist', 'src/components/ui'] },
   {
-    ignores: [
-      "dist",
-      "node_modules",
-      "coverage",
-      "src/legacy",
-      "src/App.jsx",
-      "src/main.jsx",
-      "worker",
-      "scripts",
-      "tests",
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...pluginQuery.configs['flat/recommended'],
     ],
-  },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ["**/*.{ts,tsx}"],
-    plugins: { "react-hooks": reactHooks, "react-refresh": reactRefresh },
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
+      'react-refresh/only-export-components': [
+        'warn',
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-explicit-any": "error",
+      'no-console': 'error',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
+      // Enforce type-only imports for TypeScript types
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'inline-type-imports',
+          disallowTypeAnnotations: false,
+        },
+      ],
+      // Prevent duplicate imports from the same module
+      'no-duplicate-imports': 'error',
     },
-  },
-  {
-    files: ["src/app/router.tsx", "src/components/ui/**/*.tsx"],
-    rules: { "react-refresh/only-export-components": "off" },
-  },
-);
+  }
+)

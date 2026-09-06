@@ -1,9 +1,19 @@
-node_modules/
-dist/
-artifacts/
-src/legacy/
-worker/
-tests/
-test-results/
-playwright-report/
-package-lock.json
+# Ignore everything
+/*
+
+# Except these files & folders
+!/src
+!index.html
+!package.json
+!tailwind.config.js
+!tsconfig.json
+!tsconfig.node.json
+!vite.config.ts
+!.prettierrc
+!README.md
+!eslint.config.js
+!postcss.config.js
+!.vscode/
+
+# Ignore auto generated routeTree.gen.ts
+/src/routeTree.gen.ts
