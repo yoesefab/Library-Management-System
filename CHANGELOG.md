@@ -4,7 +4,15 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
-- Suppression des comparaisons affichées sous les indicateurs du tableau de bord de `prototype2`.
+- Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.
+
+- Filtres serveur des utilisateurs par rôle et statut, tri global par nom/e-mail, réinitialisation, actualisation et choix de 10 à 100 lignes par page ; comptage et pagination après filtrage.
+
+- Ajout de la page Utilisateurs de `prototype2`, réservée aux administrateurs : recherche paginée, création, modification du profil/rôle, activation/désactivation et mot de passe facultatif en modification via les API réelles. Tests des autorisations backend par rôle et prise en compte du statut inactif à la création.
+
+- Migration de la fiche commande de `prototype2` vers les cartes, boutons, badges, alertes et dialogue shadcn ; suppression des mouvements en bas de page, conservation de l’annulation backend et affichage de ses erreurs.
+- Alignement des comparaisons en bas des cartes d’indicateurs de `prototype2`.
+- Affichage mensuel des courbes du tableau de bord de `prototype2` sur les douze mois de démonstration.
 - Correction des répartitions du tableau de bord par catégorie et langue afin qu'elles affichent les exemplaires vendus, conformément à leurs libellés.
 - Autorisation des origines locales du prototype sur le port 5174 afin que l'authentification et les appels API fonctionnent depuis l'interface active.
 - Correction des axes des courbes pour les données réelles et du chargement des lignes de commande dans `prototype2`.

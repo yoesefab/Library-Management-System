@@ -1,6 +1,7 @@
 package ma.maarifculture.analytics.controller;
 
 import jakarta.validation.Valid;
+import ma.maarifculture.analytics.model.UserRole;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import ma.maarifculture.analytics.dto.AuthDtos.UserRequest;
@@ -20,8 +21,10 @@ public class AdministrationController {
     public AdministrationController(UserAdministrationService service) { this.service = service; }
 
     @GetMapping("/users") public PageResponse<UserResponse> users(@RequestParam(defaultValue="") String query,
-            @RequestParam(defaultValue="0") @Min(0) int page, @RequestParam(defaultValue="20") @Min(1) @Max(100) int size) {
-        return service.list(query, page, size);
+            @RequestParam(defaultValue="0") @Min(0) int page, @RequestParam(defaultValue="20") @Min(1) @Max(100) int size,
+            @RequestParam(required=false) UserRole role, @RequestParam(required=false) Boolean active,
+            @RequestParam(defaultValue="fullName") String sortBy, @RequestParam(defaultValue="asc") String direction) {
+        return service.list(query, page, size, role, active, sortBy, direction);
     }
     @PostMapping("/users") @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@Valid @RequestBody UserRequest request) { return service.create(request); }

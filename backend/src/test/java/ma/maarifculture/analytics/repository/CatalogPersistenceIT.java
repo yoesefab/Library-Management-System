@@ -97,4 +97,26 @@ class CatalogPersistenceIT {
                         new Product("DUPLICATE-SKU", "Second", "fr", new BigDecimal("60.00"))))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
+    @Autowired private AppUserRepository userRepository;
+
+    @Test
+    void filtersUsersBeforeCountingSortingAndPagination() {
+        var first = new ma.maarifculture.analytics.model.AppUser("B Compte Démo", "b@example.test", "test-hash", ma.maarifculture.analytics.model.UserRole.MANAGER);
+        var second = new ma.maarifculture.analytics.model.AppUser("C Compte Démo", "c@example.test", "test-hash", ma.maarifculture.analytics.model.UserRole.MANAGER);
+        var active = new ma.maarifculture.analytics.model.AppUser("D Compte Démo", "d@example.test", "test-hash", ma.maarifculture.analytics.model.UserRole.MANAGER);
+        var stock = new ma.maarifculture.analytics.model.AppUser("A Compte Démo", "a@example.test", "test-hash", ma.maarifculture.analytics.model.UserRole.STOCK_EMPLOYEE);
+        first.setActive(false);
+        second.setActive(false);
+        stock.setActive(false);
+        userRepository.saveAllAndFlush(java.util.List.of(first, second, active, stock));
+        var sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "fullName");
+        var page = userRepository.search("COMPTE", ma.maarifculture.analytics.model.UserRole.MANAGER, false, PageRequest.of(0, 1, sort));
+        assertThat(page.getTotalElements()).isEqualTo(2);
+        assertThat(page.getContent()).extracting(ma.maarifculture.analytics.model.AppUser::getEmail).containsExactly("c@example.test");
+        assertThat(userRepository.search("COMPTE", ma.maarifculture.analytics.model.UserRole.MANAGER, false, PageRequest.of(1, 1, sort)).getContent())
+                .extracting(ma.maarifculture.analytics.model.AppUser::getEmail).containsExactly("b@example.test");
+        assertThat(userRepository.search("d@example", null, true, PageRequest.of(0, 20)).getTotalElements()).isEqualTo(1);
+        assertThat(userRepository.search("", null, null, PageRequest.of(0, 20)).getTotalElements()).isEqualTo(4);
+    }
+
 }

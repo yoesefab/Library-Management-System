@@ -7,6 +7,8 @@ import ma.maarifculture.analytics.dto.PageResponse;
 import ma.maarifculture.analytics.exception.ConflictException;
 import ma.maarifculture.analytics.exception.ResourceNotFoundException;
 import ma.maarifculture.analytics.model.AppUser;
+import ma.maarifculture.analytics.model.UserRole;
+import java.util.Set;
 import ma.maarifculture.analytics.repository.AppUserRepository;
 import ma.maarifculture.analytics.repository.AuditLogRepository;
 import org.springframework.data.domain.PageRequest;
@@ -29,10 +31,17 @@ public class UserAdministrationService {
         this.users = users; this.logs = logs; this.encoder = encoder; this.currentUser = currentUser; this.audit = audit;
     }
 
-    public PageResponse<UserResponse> list(String query, int page, int size) {
+    public PageResponse<UserResponse> list(String query, int page, int size, UserRole role,
+            Boolean active, String sortBy, String direction) {
+        if (!Set.of("fullName", "email", "role", "active").contains(sortBy)) {
+            throw new IllegalArgumentException("Colonne de tri invalide.");
+        }
+        if (!Set.of("asc", "desc").contains(direction)) {
+            throw new IllegalArgumentException("Sens de tri invalide.");
+        }
         String q = query == null ? "" : query.trim();
-        return PageResponse.from(users.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                q, q, PageRequest.of(page, size, Sort.by("fullName"))).map(this::response));
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy).and(Sort.by("id"));
+        return PageResponse.from(users.search(q, role, active, PageRequest.of(page, size, sort)).map(this::response));
     }
 
     @Transactional
@@ -40,6 +49,7 @@ public class UserAdministrationService {
         if (request.password() == null || request.role() == null) throw new IllegalArgumentException("Mot de passe et rôle requis.");
         if (users.existsByEmailIgnoreCase(request.email())) throw new ConflictException("Cet email est déjà utilisé.");
         AppUser user = users.save(new AppUser(request.fullName(), request.email(), encoder.encode(request.password()), request.role()));
+        if (request.active() != null) user.setActive(request.active());
         audit.record(currentUser.required(), "USER_CREATED", "AppUser", user.getId(), "role=" + user.getRole());
         return response(user);
     }
