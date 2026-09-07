@@ -1,5 +1,7 @@
 ## Connexion au backend (2026-09-05)
 
+- Stabilisation des tests navigateur du profil en précompilant la dépendance d’avatar utilisée par ses composants.
+
 - Compatibilité avec la base locale : conservation de V3 (préférences dashboard) et application du champ image via V4 ; index unique nullable compatible PostgreSQL/H2.
 
 - Rétablissement du build Docker frontend, prise en charge des uploads jusqu’à 5 Mo par le proxy et stockage persistant des images avec les permissions backend nécessaires.

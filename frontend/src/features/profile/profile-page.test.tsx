@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
+import { SidebarProvider } from '@/components/ui/sidebar'
 import { ProfilePage } from './profile-page'
 
 vi.mock('@/context/session-provider', () => ({
@@ -25,7 +26,9 @@ describe('ProfilePage', () => {
     })
     const screen = await render(
       <QueryClientProvider client={queryClient}>
-        <ProfilePage />
+        <SidebarProvider>
+          <ProfilePage />
+        </SidebarProvider>
       </QueryClientProvider>
     )
 

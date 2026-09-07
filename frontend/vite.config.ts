@@ -32,6 +32,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    include: ['@radix-ui/react-avatar'],
+  },
   test: {
     silent: 'passed-only',
     unstubEnvs: true,
