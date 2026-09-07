@@ -9,6 +9,7 @@ import { InventoryManagement } from '@/maarif-legacy/pages/InventoryPage.jsx'
 import { LogsPage } from '@/maarif-legacy/pages/LogsPage.jsx'
 import { OrderDetailsPage } from '@/maarif-legacy/pages/OrderDetailsPage.jsx'
 import { OrdersManagement } from '@/maarif-legacy/pages/OrdersPage.jsx'
+import { ProductEditor } from '@/maarif-legacy/pages/ProductEditorPage.jsx'
 import { ProductDetails } from '@/maarif-legacy/pages/ProductDetailsPage.jsx'
 import { ReportsPage } from '@/maarif-legacy/pages/ReportsPage.jsx'
 import { SalesImportPage } from '@/maarif-legacy/pages/SalesImportPage.jsx'
@@ -45,6 +46,9 @@ import {
   movementTypes,
   productRequest,
 } from './backend-adapters'
+
+import { ProductCreateDialog, type ProductForm } from './product-create-dialog'
+import { ProductDetails } from './product-details'
 import { ProductCreateDialog } from './product-create-dialog'
 import { ProductCatalog } from './products-catalog'
 import { UserManagement } from './user-management'
