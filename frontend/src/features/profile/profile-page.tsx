@@ -106,16 +106,16 @@ export function ProfilePage() {
   return (
     <>
       <Header fixed>
-        <div className='flex flex-1 items-center justify-between'>
-          <div>
-            <p className='text-sm font-semibold'>Mon profil</p>
-            <p className='text-xs text-muted-foreground'>
-              Gérez vos informations personnelles et votre sécurité.
-            </p>
-          </div>
-        </div>
+        <p className='text-sm font-semibold'>Espace personnel</p>
       </Header>
       <Main className='space-y-6'>
+        <div>
+          <h1 className='text-2xl font-bold tracking-tight'>Mon profil</h1>
+          <p className='text-muted-foreground'>
+            Gérez vos informations personnelles et la sécurité de votre compte.
+          </p>
+        </div>
+
         <section className='flex flex-col gap-4 rounded-xl border bg-card p-5 sm:flex-row sm:items-center'>
           <Avatar className='size-16'>
             <AvatarFallback className='bg-emerald-700 text-lg font-semibold text-white'>
@@ -123,9 +123,9 @@ export function ProfilePage() {
             </AvatarFallback>
           </Avatar>
           <div className='min-w-0 flex-1'>
-            <h1 className='truncate text-2xl font-bold tracking-tight'>
+            <h2 className='truncate text-2xl font-bold tracking-tight'>
               {user.fullName}
-            </h1>
+            </h2>
             <p className='truncate text-sm text-muted-foreground'>
               {user.email}
             </p>

@@ -1,5 +1,9 @@
 ## Connexion au backend (2026-09-05)
 
+- Mise en évidence de la page `/profile` avec un titre Mon profil, les informations du compte et les formulaires de modification du profil et du mot de passe.
+
+- Simplification de tous les menus de profil : suppression de l'action Paramètres, maintien du lien Mon profil vers `/profile` et de l'action Se déconnecter.
+
 - Harmonisation de la modification d’un produit avec le dialogue et le formulaire shadcn utilisés pour sa création, préremplis avec les informations du catalogue.
 
 - Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.
