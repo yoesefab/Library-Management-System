@@ -10,7 +10,6 @@ import { LogsPage } from '@/maarif-legacy/pages/LogsPage.jsx'
 import { OrderDetailsPage } from '@/maarif-legacy/pages/OrderDetailsPage.jsx'
 import { OrdersManagement } from '@/maarif-legacy/pages/OrdersPage.jsx'
 import { ProductDetails } from '@/maarif-legacy/pages/ProductDetailsPage.jsx'
-import { ProductEditor } from '@/maarif-legacy/pages/ProductEditorPage.jsx'
 import { ReportsPage } from '@/maarif-legacy/pages/ReportsPage.jsx'
 import { SalesImportPage } from '@/maarif-legacy/pages/SalesImportPage.jsx'
 import { StockAlertsPage } from '@/maarif-legacy/pages/StockAlertsPage.jsx'
@@ -46,7 +45,7 @@ import {
   movementTypes,
   productRequest,
 } from './backend-adapters'
-import { ProductCreateDialog, type ProductForm } from './product-create-dialog'
+import { ProductCreateDialog } from './product-create-dialog'
 import { ProductCatalog } from './products-catalog'
 import { UserManagement } from './user-management'
 
@@ -202,7 +201,8 @@ export function DashboardWorkspace() {
 
 export function ProductsWorkspace({
   initialCreate = false,
-}: { initialCreate?: boolean } = {}) {
+  initialEditSku,
+}: { initialCreate?: boolean; initialEditSku?: string } = {}) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { user } = useSession()
@@ -211,10 +211,18 @@ export function ProductsWorkspace({
     queryFn: ({ signal }) => loadProducts(signal),
   })
   const [createOpen, setCreateOpen] = useState(initialCreate)
+  const [editSku, setEditSku] = useState(initialEditSku)
   const closeCreate = () => {
     setCreateOpen(false)
     if (initialCreate) void navigate({ to: '/products', replace: true })
   }
+  const closeEdit = () => {
+    setEditSku(undefined)
+    void navigate({ to: '/products', replace: true })
+  }
+  const editedProduct = products.data?.find(
+    (product) => product.sku === editSku
+  )
   return (
     <PageFrame title='Produits' nativeLayout>
       <ProductCatalog
@@ -229,12 +237,13 @@ export function ProductsWorkspace({
           await queryClient.invalidateQueries({ queryKey: ['products'] })
         }}
         onCreate={() => setCreateOpen(true)}
-        onEdit={(product: ProductReference) =>
-          navigate({
+        onEdit={(product: ProductReference) => {
+          setEditSku(product.sku)
+          void navigate({
             to: '/products/$sku/edit',
             params: { sku: product.sku },
           })
-        }
+        }}
         onView={(product: ProductReference) =>
           navigate({ to: '/products/$sku', params: { sku: product.sku } })
         }
@@ -248,43 +257,26 @@ export function ProductsWorkspace({
           }}
         />
       )}
+      {editedProduct && (
+        <ProductCreateDialog
+          product={editedProduct}
+          onClose={closeEdit}
+          onCreate={async (values) => {
+            if (editedProduct.id == null) return
+            await productsApi.update(
+              editedProduct.id,
+              await productRequest(values)
+            )
+            await queryClient.invalidateQueries({ queryKey: ['products'] })
+          }}
+        />
+      )}
     </PageFrame>
   )
 }
 
 export function ProductEditorWorkspace({ sku }: { sku?: string }) {
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const products = useQuery({
-    queryKey: ['products', 'workspace'],
-    queryFn: ({ signal }) => loadProducts(signal),
-  })
-  if (!products.data)
-    return (
-      <PageFrame title={sku ? 'Modifier un produit' : 'Créer un produit'}>
-        {null}
-      </PageFrame>
-    )
-  const source = products.data ?? CATALOG_PRODUCTS
-  const product = sku
-    ? ((source.find((item: ProductReference) => item.sku === sku) ??
-        CATALOG_PRODUCTS[0]) as (typeof source)[number] & ProductReference)
-    : null
-  return (
-    <PageFrame title={sku ? 'Modifier un produit' : 'Créer un produit'}>
-      <ProductEditor
-        mode={sku ? 'edit' : 'create'}
-        onCancel={() => navigate({ to: '/products' })}
-        onSave={async (values: ProductForm) => {
-          const request = await productRequest(values)
-          if (product?.id) await productsApi.update(product.id, request)
-          else await productsApi.create(request)
-          await queryClient.invalidateQueries({ queryKey: ['products'] })
-        }}
-        product={product}
-      />
-    </PageFrame>
-  )
+  return <ProductsWorkspace initialEditSku={sku} />
 }
 
 export function ProductDetailsWorkspace({ sku }: { sku: string }) {

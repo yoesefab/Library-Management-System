@@ -4,6 +4,53 @@ import { userEvent } from 'vitest/browser'
 import { ProductCreateDialog } from './product-create-dialog'
 
 describe('ProductCreateDialog', () => {
+  it('uses the creation form to edit a prefilled product', async () => {
+    const onCreate = vi.fn().mockResolvedValue(undefined)
+    const screen = await render(
+      <ProductCreateDialog
+        onClose={vi.fn()}
+        onCreate={onCreate}
+        product={{
+          sku: 'LIV-000184',
+          isbn: '9782070360024',
+          title: 'L’Étranger',
+          description: 'Roman',
+          author: 'Albert Camus',
+          publisher: 'Gallimard',
+          category: 'Roman',
+          language: 'Français',
+          price: 89,
+          purchaseCost: 55,
+          threshold: 5,
+          supplier: 'Sodis Maroc',
+          supplierLeadTime: 7,
+          active: true,
+        }}
+      />
+    )
+
+    await expect
+      .element(screen.getByRole('heading', { name: 'Modifier le produit' }))
+      .toBeVisible()
+    await expect
+      .element(screen.getByRole('textbox', { name: 'Titre', exact: true }))
+      .toHaveValue('L’Étranger')
+    await userEvent.fill(
+      screen.getByRole('textbox', { name: 'Titre', exact: true }),
+      'L’Étranger — édition révisée'
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Enregistrer', exact: true })
+    )
+
+    expect(onCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sku: 'LIV-000184',
+        title: 'L’Étranger — édition révisée',
+      })
+    )
+  })
+
   it('shows required-field errors and rejects an existing SKU', async () => {
     const onClose = vi.fn()
     const screen = await render(<ProductCreateDialog onClose={onClose} />)
