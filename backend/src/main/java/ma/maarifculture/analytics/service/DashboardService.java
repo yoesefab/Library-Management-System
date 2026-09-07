@@ -53,6 +53,7 @@ public class DashboardService {
         return new ComparisonMetric(previous,change,previous.signum()==0?null:change.multiply(BigDecimal.valueOf(100)).divide(previous.abs(),2,RoundingMode.HALF_UP));
     }
     private boolean matches(Product p,Long category,String language,Long author,Long publisher){return(category==null||(p.getCategory()!=null&&category.equals(p.getCategory().getId())))&&(language==null||language.isBlank()||language.equalsIgnoreCase(p.getLanguage()))&&(publisher==null||(p.getPublisher()!=null&&publisher.equals(p.getPublisher().getId())))&&(author==null||p.getAuthors().stream().anyMatch(a->author.equals(a.getId())));}
-    private ProductMetric metric(Product p,long units,BigDecimal revenue){return new ProductMetric(p.getId(),p.getSku(),p.getTitle(),units,revenue,inventory.currentStock(p.getId()));}
+    private ProductMetric metric(Product p,long units,BigDecimal revenue){return new ProductMetric(p.getId(),p.getSku(),p.getTitle(),imageUrl(p),units,revenue,inventory.currentStock(p.getId()));}
     private List<MetricPoint> aggregateUnits(List<OrderItem> sold,Function<Product,String> key){return sold.stream().collect(Collectors.groupingBy(i->key.apply(i.getProduct()),Collectors.summingLong(OrderItem::getQuantity))).entrySet().stream().sorted(Map.Entry.<String,Long>comparingByValue().reversed()).map(e->new MetricPoint(e.getKey(),BigDecimal.valueOf(e.getValue()))).toList();}
+    private String imageUrl(Product p){return p.getImageKey()==null?null:"/api/products/"+p.getId()+"/image";}
 }

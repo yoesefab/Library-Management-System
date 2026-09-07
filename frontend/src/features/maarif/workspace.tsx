@@ -9,8 +9,6 @@ import { InventoryManagement } from '@/maarif-legacy/pages/InventoryPage.jsx'
 import { LogsPage } from '@/maarif-legacy/pages/LogsPage.jsx'
 import { OrderDetailsPage } from '@/maarif-legacy/pages/OrderDetailsPage.jsx'
 import { OrdersManagement } from '@/maarif-legacy/pages/OrdersPage.jsx'
-import { ProductEditor } from '@/maarif-legacy/pages/ProductEditorPage.jsx'
-import { ProductDetails } from '@/maarif-legacy/pages/ProductDetailsPage.jsx'
 import { ReportsPage } from '@/maarif-legacy/pages/ReportsPage.jsx'
 import { SalesImportPage } from '@/maarif-legacy/pages/SalesImportPage.jsx'
 import { StockAlertsPage } from '@/maarif-legacy/pages/StockAlertsPage.jsx'
@@ -46,10 +44,8 @@ import {
   movementTypes,
   productRequest,
 } from './backend-adapters'
-
-import { ProductCreateDialog, type ProductForm } from './product-create-dialog'
-import { ProductDetails } from './product-details'
 import { ProductCreateDialog } from './product-create-dialog'
+import { ProductDetails } from './product-details'
 import { ProductCatalog } from './products-catalog'
 import { UserManagement } from './user-management'
 
@@ -255,8 +251,12 @@ export function ProductsWorkspace({
       {createOpen && (
         <ProductCreateDialog
           onClose={closeCreate}
-          onCreate={async (values) => {
-            await productsApi.create(await productRequest(values))
+          onCreate={async (values, image) => {
+            const created = await productsApi.create(
+              await productRequest(values)
+            )
+            if (image instanceof File)
+              await productsApi.uploadImage(created.id, image)
             await queryClient.invalidateQueries({ queryKey: ['products'] })
           }}
         />
@@ -265,12 +265,16 @@ export function ProductsWorkspace({
         <ProductCreateDialog
           product={editedProduct}
           onClose={closeEdit}
-          onCreate={async (values) => {
+          onCreate={async (values, image) => {
             if (editedProduct.id == null) return
             await productsApi.update(
               editedProduct.id,
               await productRequest(values)
             )
+            if (image instanceof File)
+              await productsApi.uploadImage(editedProduct.id, image)
+            else if (image === null)
+              await productsApi.removeImage(editedProduct.id)
             await queryClient.invalidateQueries({ queryKey: ['products'] })
           }}
         />

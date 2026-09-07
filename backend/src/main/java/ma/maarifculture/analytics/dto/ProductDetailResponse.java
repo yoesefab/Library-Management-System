@@ -9,6 +9,7 @@ public record ProductDetailResponse(
         String sku,
         String isbn,
         String title,
+        String imageUrl,
         String description,
         String language,
         BigDecimal sellingPrice,

@@ -106,3 +106,7 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Ajout de la migration additive V2 pour les paramètres applicatifs et le contenu temporaire des aperçus d'import.
 - Comptage des lignes d'import corrigé pour distinguer lignes rejetées et erreurs multiples; rejet des lignes de commande incohérentes ou des produits dupliqués.
 - Construction de l'image backend simplifiée pour éviter la résolution hors ligne des dépendances optionnelles de plugins Maven.
+# Changements non publiés
+
+- Ajout de la gestion sécurisée des images produit (JPG, PNG et WebP, 5 Mo maximum), avec téléversement, remplacement, suppression et URLs API stables.
+- Ajout des images et d’un visuel de remplacement accessible dans le catalogue, la fiche produit et les données produit des stocks, alertes, commandes, prévisions et tableaux de bord.

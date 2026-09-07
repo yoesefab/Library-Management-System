@@ -57,6 +57,7 @@ import {
   YAxis,
 } from 'recharts'
 import { Button } from '@/components/ui/button'
+import { ProductImage } from '@/features/maarif/product-image'
 import { RecordsTable } from '@/features/maarif/records-table'
 import { StatusBadge } from '@/features/maarif/status-badge'
 import { frenchDateOrder } from '@/features/maarif/table-format'
@@ -391,7 +392,12 @@ export function StockAlertsPage({ alertData, onUpdate }) {
             key: 'product',
             label: 'Produit',
             filter: true,
-            render: (row) => <span className='font-medium'>{row.product}</span>,
+            render: (row) => (
+              <div className='flex items-center gap-2'>
+                <ProductImage title={row.product} imageUrl={row.imageUrl} />
+                <span className='font-medium'>{row.product}</span>
+              </div>
+            ),
           },
           { key: 'sku', label: 'SKU', hidden: true },
           { key: 'type', label: 'Type', filter: true },

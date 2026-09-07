@@ -7,6 +7,7 @@ public record ProductSummaryResponse(
         String sku,
         String isbn,
         String title,
+        String imageUrl,
         String language,
         BigDecimal sellingPrice,
         String category,

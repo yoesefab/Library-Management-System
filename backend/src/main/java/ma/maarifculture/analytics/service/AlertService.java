@@ -30,5 +30,6 @@ public class AlertService {
     @Transactional public AlertResponse acknowledge(Long id){StockAlert a=required(id);AppUser actor=currentUser.required();a.acknowledge(actor);audit.record(actor,"ALERT_ACKNOWLEDGED","StockAlert",id,null);return response(a);}
     @Transactional public AlertResponse resolve(Long id){StockAlert a=required(id);AppUser actor=currentUser.required();a.resolve(actor);audit.record(actor,"ALERT_RESOLVED","StockAlert",id,null);return response(a);}
     private StockAlert required(Long id){return alerts.findById(id).orElseThrow(()->new ResourceNotFoundException("Alerte introuvable : "+id));}
-    private AlertResponse response(StockAlert a){Product p=a.getProduct();return new AlertResponse(a.getId(),p.getId(),p.getSku(),p.getTitle(),a.getAlertType(),a.getSeverity(),a.getExplanation(),a.getStatus(),a.getCreatedAt(),a.getAcknowledgedAt(),a.getResolvedAt());}
+    private AlertResponse response(StockAlert a){Product p=a.getProduct();return new AlertResponse(a.getId(),p.getId(),p.getSku(),p.getTitle(),imageUrl(p),a.getAlertType(),a.getSeverity(),a.getExplanation(),a.getStatus(),a.getCreatedAt(),a.getAcknowledgedAt(),a.getResolvedAt());}
+    private String imageUrl(Product p){return p.getImageKey()==null?null:"/api/products/"+p.getId()+"/image";}
 }

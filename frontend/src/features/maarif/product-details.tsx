@@ -45,6 +45,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { ProductImage } from './product-image'
 
 const RECENT_SALES = [
   ['25–27 août 2026', '38', '2 964,00 MAD'],
@@ -63,6 +64,7 @@ const INVENTORY_MOVEMENTS = [
 ] as const
 
 type Product = {
+  imageUrl?: string | null
   active: boolean
   author: string
   category: string
@@ -171,6 +173,12 @@ export function ProductDetails({
   return (
     <div className='space-y-6'>
       <div className='flex flex-col justify-between gap-4 lg:flex-row lg:items-end'>
+        <ProductImage
+          title={product.title}
+          imageUrl={product.imageUrl}
+          size='lg'
+          className='max-w-48'
+        />
         <div className='min-w-0 space-y-3'>
           <Button className='-ms-3' onClick={onBack} size='sm' variant='ghost'>
             <ArrowLeft />

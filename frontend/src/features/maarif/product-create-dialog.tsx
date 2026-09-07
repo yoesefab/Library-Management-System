@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CATALOG_PRODUCTS } from '@/maarif-legacy/shared/catalogData'
 import { toast } from 'sonner'
@@ -41,6 +41,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { ProductImageUpload, type ProductImageChange } from './product-image'
 
 const amount = (value: string) => Number(value.replace(',', '.'))
 const productSchema = (currentSku?: string) =>
@@ -176,6 +177,7 @@ const fields: {
 ]
 
 type EditableProduct = {
+  imageUrl?: string | null
   sku: string
   isbn?: string | null
   title: string
@@ -220,16 +222,18 @@ export function ProductCreateDialog({
   product,
 }: {
   onClose: () => void
-  onCreate?: (values: ProductForm) => Promise<void>
+  onCreate?: (values: ProductForm, image: ProductImageChange) => Promise<void>
   product?: EditableProduct
 }) {
   const isEdit = Boolean(product)
   const [confirmDiscard, setConfirmDiscard] = useState(false)
+  const [image, setImage] = useState<ProductImageChange>(undefined)
   const form = useForm<ProductForm>({
     resolver: zodResolver(productSchema(product?.sku)),
     defaultValues: productFormValues(product),
   })
   const dirty = form.formState.isDirty
+  const productTitle = useWatch({ control: form.control, name: 'title' })
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
       if (dirty) {
@@ -242,7 +246,7 @@ export function ProductCreateDialog({
   }, [dirty])
   const requestClose = () => (dirty ? setConfirmDiscard(true) : onClose())
   const onSubmit = async (values: ProductForm) => {
-    await onCreate?.(values)
+    await onCreate?.(values, image)
     form.reset()
     toast.success(isEdit ? 'Produit mis à jour' : 'Produit validé', {
       description: isEdit
@@ -279,6 +283,17 @@ export function ProductCreateDialog({
                 className='grid grid-cols-1 items-start gap-4! px-0.5 sm:grid-cols-2'
                 noValidate
               >
+                <ProductImageUpload
+                  title={productTitle}
+                  currentUrl={product?.imageUrl}
+                  value={image}
+                  onChange={(next) => {
+                    setImage(next)
+                    form.setValue('title', form.getValues('title'), {
+                      shouldDirty: true,
+                    })
+                  }}
+                />
                 {fields.map((config) => (
                   <FormField
                     key={config.name}

@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+import ma.maarifculture.analytics.service.ProductImageService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -32,10 +36,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductImageService imageService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductImageService imageService) {
         this.productService = productService;
+        this.imageService = imageService;
     }
+
+    @PutMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','MANAGER')")
+    @Operation(summary = "Ajouter ou remplacer l’image d’un produit")
+    public ProductDetailResponse uploadImage(@PathVariable @Positive Long id, @RequestPart("file") MultipartFile file) { return imageService.store(id, file); }
+
+    @GetMapping("/{id}/image")
+    @Operation(summary = "Afficher l’image d’un produit")
+    public ResponseEntity<org.springframework.core.io.Resource> image(@PathVariable @Positive Long id) { var image=imageService.load(id); return ResponseEntity.ok().contentType(image.mediaType()).header("Cache-Control", "private, no-cache").body(image.resource()); }
+
+    @DeleteMapping("/{id}/image")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','MANAGER')")
+    @Operation(summary = "Supprimer l’image d’un produit")
+    public ProductDetailResponse removeImage(@PathVariable @Positive Long id) { return imageService.remove(id); }
 
     @GetMapping
     @Operation(summary = "Lister et filtrer les produits")

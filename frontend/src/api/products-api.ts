@@ -29,6 +29,18 @@ export const productsApi = {
     apiRequest<ProductDetail>('/api/products', { method: 'POST', body }),
   update: (id: number, body: ProductRequest) =>
     apiRequest<ProductDetail>(`/api/products/${id}`, { method: 'PUT', body }),
+  uploadImage: (id: number, file: File) => {
+    const body = new FormData()
+    body.append('file', file)
+    return apiRequest<ProductDetail>(`/api/products/${id}/image`, {
+      method: 'PUT',
+      body,
+    })
+  },
+  removeImage: (id: number) =>
+    apiRequest<ProductDetail>(`/api/products/${id}/image`, {
+      method: 'DELETE',
+    }),
   deactivate: (id: number) =>
     apiRequest<void>(`/api/products/${id}`, { method: 'DELETE' }),
   categories: (signal?: AbortSignal) =>

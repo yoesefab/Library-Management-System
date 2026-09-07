@@ -17,6 +17,7 @@ import ma.maarifculture.analytics.dto.ProductRequest;
 import ma.maarifculture.analytics.dto.ProductSummaryResponse;
 import ma.maarifculture.analytics.exception.GlobalExceptionHandler;
 import ma.maarifculture.analytics.service.ProductService;
+import ma.maarifculture.analytics.service.ProductImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -37,10 +38,13 @@ class ProductControllerTest {
     @MockitoBean
     private ProductService productService;
 
+    @MockitoBean
+    private ProductImageService productImageService;
+
     @Test
     void returnsPaginatedProducts() throws Exception {
         ProductSummaryResponse product = new ProductSummaryResponse(
-                7L, "LIV-FR-007", null, "Produit synthétique", "fr", new BigDecimal("95.00"),
+                7L, "LIV-FR-007", null, "Produit synthétique", null, "fr", new BigDecimal("95.00"),
                 "Littérature", "Éditions Démo", true);
         when(productService.search("livre", true, "fr", null, 0, 20))
                 .thenReturn(new PageResponse<>(List.of(product), 0, 20, 1, 1, true, true));
@@ -61,6 +65,7 @@ class ProductControllerTest {
                 "LIV-AR-012",
                 null,
                 "كتاب تجريبي",
+                null,
                 null,
                 "ar",
                 new BigDecimal("70.00"),

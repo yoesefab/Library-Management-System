@@ -20,7 +20,7 @@ public class InventoryService {
     }
     public int currentStock(Long productId){return Math.toIntExact(movements.currentStock(productId));}
     public PageResponse<StockResponse> inventory(int page,int size){return PageResponse.from(products.findAll(PageRequest.of(page,size,Sort.by("title")))
-            .map(p->new StockResponse(p.getId(),p.getSku(),p.getTitle(),currentStock(p.getId()),p.getMinimumStockThreshold(),p.isActive())));}
+            .map(p->new StockResponse(p.getId(),p.getSku(),p.getTitle(),imageUrl(p),currentStock(p.getId()),p.getMinimumStockThreshold(),p.isActive())));}
     public PageResponse<MovementResponse> history(Long productId,int page,int size){
         products.findById(productId).orElseThrow(()->new ResourceNotFoundException("Produit introuvable : "+productId));
         return PageResponse.from(movements.findByProductId(productId,PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"occurredAt"))).map(this::response));
@@ -50,5 +50,6 @@ public class InventoryService {
         if((positive&&quantity<0)||(negative&&quantity>0)) throw new IllegalArgumentException("Le signe de la quantité ne correspond pas au type de mouvement.");
     }
     private MovementResponse response(InventoryMovement m){return response(m,currentStock(m.getProduct().getId()));}
-    private MovementResponse response(InventoryMovement m,int stock){return new MovementResponse(m.getId(),m.getProduct().getId(),m.getProduct().getSku(),m.getProduct().getTitle(),m.getMovementType(),m.getQuantity(),stock,m.getReason(),m.getRelatedOrder()==null?null:m.getRelatedOrder().getId(),m.getCreatedBy().getEmail(),m.getOccurredAt());}
+    private MovementResponse response(InventoryMovement m,int stock){return new MovementResponse(m.getId(),m.getProduct().getId(),m.getProduct().getSku(),m.getProduct().getTitle(),imageUrl(m.getProduct()),m.getMovementType(),m.getQuantity(),stock,m.getReason(),m.getRelatedOrder()==null?null:m.getRelatedOrder().getId(),m.getCreatedBy().getEmail(),m.getOccurredAt());}
+    private String imageUrl(Product p){return p.getImageKey()==null?null:"/api/products/"+p.getId()+"/image";}
 }

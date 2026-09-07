@@ -92,6 +92,7 @@ export function mapProduct(
     sku: detail.sku,
     isbn: detail.isbn,
     title: detail.title,
+    imageUrl: detail.imageUrl,
     description: detail.description,
     author: detail.authors.map((author) => author.name).join(', ') || '—',
     category: detail.category?.name ?? '—',
@@ -168,6 +169,7 @@ export function mapMovement(movement: InventoryMovement) {
     id: `MVT-${movement.id}`,
     date: dateTime.format(new Date(movement.occurredAt)),
     product: movement.productTitle,
+    imageUrl: movement.imageUrl,
     sku: movement.sku,
     type: movementLabels[movement.type],
     quantity: movement.quantity,
@@ -204,6 +206,7 @@ export function mapOrder(order: SalesOrder) {
     details: {
       lines: (order.items ?? []).map((item) => ({
         product: item.title,
+        imageUrl: item.imageUrl,
         sku: item.sku,
         quantity: item.quantity,
         unitPrice: Number(item.unitPrice),
@@ -237,6 +240,7 @@ export function mapAlert(alert: StockAlert) {
     backendId: alert.id,
     id: `ALT-${alert.id}`,
     product: alert.productTitle,
+    imageUrl: alert.imageUrl,
     sku: alert.sku,
     type,
     severity,

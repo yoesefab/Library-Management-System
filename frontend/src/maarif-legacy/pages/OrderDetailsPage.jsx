@@ -31,6 +31,7 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card'
+import { ProductImage } from '@/features/maarif/product-image'
 import { RecordsTable } from '@/features/maarif/records-table'
 import { formatMad } from '../shared/catalogData.js'
 import { detailsForOrder } from '../shared/orderData.jsx'
@@ -253,10 +254,16 @@ export function OrderDetailsPage({
                 key: 'product',
                 label: 'Produit',
                 render: (line) => (
-                  <div>
-                    <span className='font-medium'>{line.product}</span>
-                    <div className='text-xs text-muted-foreground'>
-                      {line.sku}
+                  <div className='flex items-center gap-2'>
+                    <ProductImage
+                      title={line.product}
+                      imageUrl={line.imageUrl}
+                    />
+                    <div>
+                      <span className='font-medium'>{line.product}</span>
+                      <div className='text-xs text-muted-foreground'>
+                        {line.sku}
+                      </div>
                     </div>
                   </div>
                 ),

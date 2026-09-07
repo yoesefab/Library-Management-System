@@ -17,8 +17,8 @@ spring:
     enabled: true
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 6MB
+      max-request-size: 6MB
 
 server:
   port: ${BACKEND_PORT:8080}
@@ -47,6 +47,8 @@ springdoc:
     path: /swagger-ui.html
 
 maarif:
+  images:
+    directory: ${PRODUCT_IMAGE_DIRECTORY:./data/product-images}
   business-timezone: ${BUSINESS_TIMEZONE:Africa/Casablanca}
   demo-data:
     enabled: ${DEMO_DATA_ENABLED:false}
