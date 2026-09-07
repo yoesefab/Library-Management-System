@@ -18,7 +18,7 @@ Le client traite explicitement 401, 403, 404, 409, validation et erreurs serveur
 
 | Groupe | Routes principales | Rôles |
 |---|---|---|
-| Auth | `GET /api/auth/csrf`, `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout` | public/session |
+| Auth | `GET /api/auth/csrf`, `POST /api/auth/login`, `GET/PUT /api/auth/me`, `PUT /api/auth/me/password`, `POST /api/auth/logout` | public/session |
 | Catalogue | `/api/products`, `/api/catalog/categories`, `/authors`, `/publishers`, `/suppliers` | tous en lecture; admin/manager en mutation |
 | Inventaire | `GET /api/inventory`, `GET /api/inventory/products/{id}/movements`, `POST /api/inventory/movements` | tous les rôles |
 | Commandes | `GET/POST /api/orders`, `GET /api/orders/{id}`, `PATCH /api/orders/{id}/status` | admin/manager |

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ChevronsUpDown, LogOut, Settings2, UserRound } from 'lucide-react'
+import { ChevronsUpDown, LogOut, UserRound } from 'lucide-react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -84,15 +84,9 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                  <Link to='/administration'>
+                  <Link to='/profile'>
                     <UserRound />
                     Mon profil
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to='/administration'>
-                    <Settings2 />
-                    Paramètres
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>

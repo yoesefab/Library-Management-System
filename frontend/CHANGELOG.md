@@ -4,6 +4,8 @@
 
 - Rétablissement du build Docker frontend, prise en charge des uploads jusqu’à 5 Mo par le proxy et stockage persistant des images avec les permissions backend nécessaires.
 
+- Mise en évidence de la page `/profile` avec un titre Mon profil, les informations du compte et les formulaires de modification du profil et du mot de passe.
+
 - Simplification de tous les menus de profil : suppression de l'action Paramètres, maintien du lien Mon profil vers `/profile` et de l'action Se déconnecter.
 
 - Harmonisation de la modification d’un produit avec le dialogue et le formulaire shadcn utilisés pour sa création, préremplis avec les informations du catalogue.

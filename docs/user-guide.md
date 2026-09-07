@@ -12,6 +12,10 @@ L’application s’ouvre sur `/login`. Après connexion, les gestionnaires et a
 4. Appeler `POST /api/auth/login` avec email et mot de passe.
 5. Pour chaque mutation, envoyer le token via `X-XSRF-TOKEN`.
 
+## Mon profil
+
+Le menu utilisateur de la barre latérale donne accès à `/profile`. Chaque utilisateur authentifié peut y modifier son nom complet et son adresse e-mail. La mise à jour est immédiatement répercutée dans la navigation. La section Sécurité permet de changer le mot de passe après saisie du mot de passe actuel; le nouveau mot de passe doit contenir au moins 12 caractères et être confirmé.
+
 ## Parcours de démonstration
 
 1. Activer localement `DEMO_DATA_ENABLED=true`.

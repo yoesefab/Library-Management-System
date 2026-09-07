@@ -12,6 +12,12 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Migration de la fiche produit vers les composants shadcn/ui : cartes d’indicateurs et d’informations, badges d’état, tableau des ventes, alerte de confirmation et dialogue accessible de désactivation.
 - Harmonisation de la modification d’un produit avec le dialogue et le formulaire shadcn utilisés pour sa création, préremplis avec les informations du catalogue.
 
+- Simplification du menu de profil de la barre latérale : seules les actions « Mon profil », reliée à la page de profil, et « Se déconnecter » sont désormais proposées.
+
+- Ajout d’une page « Mon profil » connectée permettant à chaque utilisateur authentifié de modifier son nom, son adresse e-mail et son mot de passe avec vérification du mot de passe actuel et traçabilité des changements.
+
+- Réécriture complète du README racine avec présentation fonctionnelle, architecture, démarrage Docker, développement local, sécurité, démonstration, vérifications et index documentaire.
+
 - Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.
 
 - Filtres serveur des utilisateurs par rôle et statut, tri global par nom/e-mail, réinitialisation, actualisation et choix de 10 à 100 lignes par page ; comptage et pagination après filtrage.
