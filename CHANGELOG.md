@@ -4,6 +4,7 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Réécriture complète du README racine avec présentation fonctionnelle, architecture, démarrage Docker, développement local, sécurité, démonstration, vérifications et index documentaire.
 
 - Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.
 
