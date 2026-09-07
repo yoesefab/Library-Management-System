@@ -4,7 +4,6 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
-- Migration de la fiche produit vers les composants shadcn/ui : cartes d’indicateurs et d’informations, badges d’état, tableau des ventes, alerte de confirmation et dialogue accessible de désactivation.
 
 - Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.
 

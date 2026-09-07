@@ -43,66 +43,71 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 
 const amount = (value: string) => Number(value.replace(',', '.'))
-const schema = z
-  .object({
-    sku: z
-      .string()
-      .trim()
-      .regex(/^[A-Z]{3}-\d{6}$/, 'Utilisez le format LIV-000000.')
-      .refine(
-        (value) => !CATALOG_PRODUCTS.some((product) => product.sku === value),
-        'Ce SKU est déjà utilisé par un autre produit.'
-      ),
-    isbn: z
-      .string()
-      .trim()
-      .refine(
-        (value) =>
-          !value || /^(?:\d[ -]?){9}[\dXx]$|^(?:\d[ -]?){13}$/.test(value),
-        'Saisissez un ISBN-10 ou ISBN-13 valide.'
-      ),
-    title: z.string().trim().min(1, 'Le titre est requis.'),
-    authors: z.string().trim().min(1, 'Ajoutez au moins un auteur.'),
-    description: z.string(),
-    publisher: z.string().min(1, 'Choisissez un éditeur.'),
-    category: z.string().min(1, 'Choisissez une catégorie.'),
-    language: z.string().min(1, 'Choisissez une langue.'),
-    sellingPrice: z
-      .string()
-      .trim()
-      .refine(
-        (value) => Number.isFinite(amount(value)) && amount(value) > 0,
-        'Saisissez un prix de vente supérieur à 0 MAD.'
-      ),
-    purchaseCost: z
-      .string()
-      .trim()
-      .refine(
-        (value) =>
-          value !== '' && Number.isFinite(amount(value)) && amount(value) >= 0,
-        'Saisissez un coût d’achat valide.'
-      ),
-    minimumStock: z
-      .string()
-      .regex(/^\d+$/, 'Saisissez un stock minimum positif ou nul.'),
-    supplier: z.string().min(1, 'Choisissez un fournisseur.'),
-    supplierLeadTime: z
-      .string()
-      .refine(
-        (value) => /^\d+$/.test(value) && Number(value) >= 1,
-        'Le délai doit être d’au moins un jour.'
-      ),
-    active: z.boolean(),
-  })
-  .refine(
-    (values) => amount(values.purchaseCost) <= amount(values.sellingPrice),
-    {
-      message: 'Le coût d’achat ne peut pas dépasser le prix de vente.',
-      path: ['purchaseCost'],
-    }
-  )
+const productSchema = (currentSku?: string) =>
+  z
+    .object({
+      sku: z
+        .string()
+        .trim()
+        .regex(/^[A-Z]{3}-\d{6}$/, 'Utilisez le format LIV-000000.')
+        .refine(
+          (value) =>
+            value === currentSku ||
+            !CATALOG_PRODUCTS.some((product) => product.sku === value),
+          'Ce SKU est déjà utilisé par un autre produit.'
+        ),
+      isbn: z
+        .string()
+        .trim()
+        .refine(
+          (value) =>
+            !value || /^(?:\d[ -]?){9}[\dXx]$|^(?:\d[ -]?){13}$/.test(value),
+          'Saisissez un ISBN-10 ou ISBN-13 valide.'
+        ),
+      title: z.string().trim().min(1, 'Le titre est requis.'),
+      authors: z.string().trim().min(1, 'Ajoutez au moins un auteur.'),
+      description: z.string(),
+      publisher: z.string().min(1, 'Choisissez un éditeur.'),
+      category: z.string().min(1, 'Choisissez une catégorie.'),
+      language: z.string().min(1, 'Choisissez une langue.'),
+      sellingPrice: z
+        .string()
+        .trim()
+        .refine(
+          (value) => Number.isFinite(amount(value)) && amount(value) > 0,
+          'Saisissez un prix de vente supérieur à 0 MAD.'
+        ),
+      purchaseCost: z
+        .string()
+        .trim()
+        .refine(
+          (value) =>
+            value !== '' &&
+            Number.isFinite(amount(value)) &&
+            amount(value) >= 0,
+          'Saisissez un coût d’achat valide.'
+        ),
+      minimumStock: z
+        .string()
+        .regex(/^\d+$/, 'Saisissez un stock minimum positif ou nul.'),
+      supplier: z.string().min(1, 'Choisissez un fournisseur.'),
+      supplierLeadTime: z
+        .string()
+        .refine(
+          (value) => /^\d+$/.test(value) && Number(value) >= 1,
+          'Le délai doit être d’au moins un jour.'
+        ),
+      active: z.boolean(),
+    })
+    .refine(
+      (values) => amount(values.purchaseCost) <= amount(values.sellingPrice),
+      {
+        message: 'Le coût d’achat ne peut pas dépasser le prix de vente.',
+        path: ['purchaseCost'],
+      }
+    )
 
-export type ProductForm = z.infer<typeof schema>
+export type ProductForm = z.infer<ReturnType<typeof productSchema>>
 const PRODUCT_FORM_DEFAULTS: ProductForm = {
   sku: '',
   isbn: '',
@@ -170,17 +175,59 @@ const fields: {
   },
 ]
 
+type EditableProduct = {
+  sku: string
+  isbn?: string | null
+  title: string
+  description?: string | null
+  author: string
+  publisher?: string | null
+  category: string
+  language: string
+  price: number
+  purchaseCost?: number | null
+  threshold: number
+  supplier?: string | null
+  supplierLeadTime?: number | null
+  active: boolean
+}
+
+function productFormValues(product?: EditableProduct): ProductForm {
+  if (!product) return PRODUCT_FORM_DEFAULTS
+  return {
+    sku: product.sku,
+    isbn: product.isbn ?? '',
+    title: product.title,
+    description: product.description ?? '',
+    authors: product.author === '—' ? '' : product.author,
+    publisher: product.publisher ?? 'Gallimard',
+    category: product.category,
+    language: product.language,
+    sellingPrice: product.price.toFixed(2).replace('.', ','),
+    purchaseCost: Number(product.purchaseCost ?? 0)
+      .toFixed(2)
+      .replace('.', ','),
+    minimumStock: String(product.threshold),
+    supplier: product.supplier ?? 'Sodis Maroc',
+    supplierLeadTime: String(product.supplierLeadTime ?? 7),
+    active: product.active,
+  }
+}
+
 export function ProductCreateDialog({
   onClose,
   onCreate,
+  product,
 }: {
   onClose: () => void
   onCreate?: (values: ProductForm) => Promise<void>
+  product?: EditableProduct
 }) {
+  const isEdit = Boolean(product)
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const form = useForm<ProductForm>({
-    resolver: zodResolver(schema),
-    defaultValues: PRODUCT_FORM_DEFAULTS,
+    resolver: zodResolver(productSchema(product?.sku)),
+    defaultValues: productFormValues(product),
   })
   const dirty = form.formState.isDirty
   useEffect(() => {
@@ -197,8 +244,10 @@ export function ProductCreateDialog({
   const onSubmit = async (values: ProductForm) => {
     await onCreate?.(values)
     form.reset()
-    toast.success('Produit validé', {
-      description: 'Le produit a été enregistré.',
+    toast.success(isEdit ? 'Produit mis à jour' : 'Produit validé', {
+      description: isEdit
+        ? 'Les modifications ont été enregistrées.'
+        : 'Le produit a été enregistré.',
     })
     onClose()
   }
@@ -212,16 +261,20 @@ export function ProductCreateDialog({
       >
         <DialogContent className='max-h-[90svh] sm:max-w-3xl'>
           <DialogHeader className='text-start'>
-            <DialogTitle>Créer un produit</DialogTitle>
+            <DialogTitle>
+              {isEdit ? 'Modifier le produit' : 'Créer un produit'}
+            </DialogTitle>
             <DialogDescription>
-              Ajoutez une référence au catalogue. Cliquez sur Enregistrer
-              lorsque vous avez terminé.
+              {isEdit
+                ? `Mettez à jour les informations de ${product?.title}.`
+                : 'Ajoutez une référence au catalogue.'}{' '}
+              Cliquez sur Enregistrer lorsque vous avez terminé.
             </DialogDescription>
           </DialogHeader>
           <div className='max-h-[65svh] w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
             <Form {...form}>
               <form
-                id='product-create-form'
+                id='product-form'
                 onSubmit={form.handleSubmit(onSubmit)}
                 className='grid grid-cols-1 items-start gap-4! px-0.5 sm:grid-cols-2'
                 noValidate
@@ -302,7 +355,7 @@ export function ProductCreateDialog({
             <Button variant='outline' onClick={requestClose}>
               Annuler
             </Button>
-            <Button type='submit' form='product-create-form'>
+            <Button type='submit' form='product-form'>
               Enregistrer
             </Button>
           </DialogFooter>
