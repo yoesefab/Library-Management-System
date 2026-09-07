@@ -78,6 +78,7 @@ import {
   SelectItem,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { ProductImage } from '@/features/maarif/product-image'
 import { RecordsTable } from '@/features/maarif/records-table'
 import { StatusBadge } from '@/features/maarif/status-badge'
 import { frenchDateOrder } from '@/features/maarif/table-format'
@@ -552,12 +553,15 @@ export function InventoryManagement({
             key: 'title',
             label: 'Produit',
             render: (row) => (
-              <span
-                className='font-medium'
-                dir={row.language === 'Arabe' ? 'rtl' : undefined}
-              >
-                {row.title}
-              </span>
+              <div className='flex items-center gap-2'>
+                <ProductImage title={row.title} imageUrl={row.imageUrl} />
+                <span
+                  className='font-medium'
+                  dir={row.language === 'Arabe' ? 'rtl' : undefined}
+                >
+                  {row.title}
+                </span>
+              </div>
             ),
           },
           { key: 'category', label: 'Catégorie', filter: true, hidden: true },
@@ -607,7 +611,16 @@ export function InventoryManagement({
             value: (row) => frenchDateOrder(row.date),
             render: (row) => row.date,
           },
-          { key: 'product', label: 'Produit' },
+          {
+            key: 'product',
+            label: 'Produit',
+            render: (row) => (
+              <div className='flex items-center gap-2'>
+                <ProductImage title={row.product} imageUrl={row.imageUrl} />
+                {row.product}
+              </div>
+            ),
+          },
           { key: 'sku', label: 'SKU', hidden: true },
           {
             key: 'type',

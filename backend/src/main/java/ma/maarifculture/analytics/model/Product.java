@@ -51,6 +51,10 @@ public class Product {
     @Column(length = 4000)
     private String description;
 
+    @Size(max = 160)
+    @Column(name = "image_key", length = 160)
+    private String imageKey;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
@@ -154,6 +158,10 @@ public class Product {
     public void setDescription(String description) {
         this.description = CatalogValues.optionalText(description);
     }
+
+    public void setImageKey(String imageKey) { this.imageKey = imageKey; }
+
+    public String getImageKey() { return imageKey; }
 
     public void configureInventory(int minimumStockThreshold, Integer supplierLeadTimeDays) {
         this.minimumStockThreshold = CatalogValues.nonNegative(minimumStockThreshold, "Minimum stock threshold");

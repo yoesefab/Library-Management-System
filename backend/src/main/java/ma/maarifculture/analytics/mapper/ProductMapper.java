@@ -19,6 +19,7 @@ public class ProductMapper {
                 product.getSku(),
                 product.getIsbn(),
                 product.getTitle(),
+                imageUrl(product),
                 product.getLanguage(),
                 product.getSellingPrice(),
                 name(product.getCategory()),
@@ -32,6 +33,7 @@ public class ProductMapper {
                 product.getSku(),
                 product.getIsbn(),
                 product.getTitle(),
+                imageUrl(product),
                 product.getDescription(),
                 product.getLanguage(),
                 product.getSellingPrice(),
@@ -52,6 +54,10 @@ public class ProductMapper {
 
     private String name(Category category) {
         return category == null ? null : category.getName();
+    }
+
+    private String imageUrl(Product product) {
+        return product.getImageKey() == null ? null : "/api/products/" + product.getId() + "/image";
     }
 
     private String name(Publisher publisher) {

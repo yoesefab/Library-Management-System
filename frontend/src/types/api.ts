@@ -87,6 +87,7 @@ export interface ProductSummary {
   sku: string
   isbn: string | null
   title: string
+  imageUrl: string | null
   language: string
   sellingPrice: number
   category: string | null
@@ -128,6 +129,7 @@ export interface StockItem {
   productId: number
   sku: string
   title: string
+  imageUrl: string | null
   currentStock: number
   minimumThreshold: number
   active: boolean
@@ -137,6 +139,7 @@ export interface InventoryMovement {
   productId: number
   sku: string
   productTitle: string
+  imageUrl: string | null
   type: InventoryMovementType
   quantity: number
   resultingStock: number
@@ -151,6 +154,7 @@ export interface OrderItem {
   productId: number
   sku: string
   title: string
+  imageUrl: string | null
   quantity: number
   unitPrice: number
   discount: number
@@ -211,6 +215,7 @@ export interface StockAlert {
   productId: number
   sku: string
   productTitle: string
+  imageUrl: string | null
   type: AlertType
   severity: AlertSeverity
   explanation: string
@@ -225,6 +230,7 @@ export interface Forecast {
   productId: number
   sku: string
   title: string
+  imageUrl: string | null
   periodStart: string
   periodEnd: string
   method: string
@@ -240,6 +246,7 @@ export interface Recommendation {
   productId: number
   sku: string
   title: string
+  imageUrl: string | null
   currentStock: number
   predictedDemand: number
   leadTimeDays: number
@@ -265,6 +272,7 @@ export interface ProductMetric {
   productId: number
   sku: string
   title: string
+  imageUrl: string | null
   units: number
   revenue: number
   currentStock: number

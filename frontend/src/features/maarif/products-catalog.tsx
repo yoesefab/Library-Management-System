@@ -63,9 +63,13 @@ import {
 } from '@/components/data-table'
 import { DataTableFrenchProvider } from '@/components/data-table/locale'
 import { StatusBadge } from '@/features/maarif/status-badge'
+import { ProductImage } from './product-image'
 import { ProductsBulkActions } from './products-bulk-actions'
 
-export type Product = (typeof CATALOG_PRODUCTS)[number] & { id?: number }
+export type Product = (typeof CATALOG_PRODUCTS)[number] & {
+  id?: number
+  imageUrl?: string | null
+}
 type ProductCatalogProps = {
   products?: Product[]
   onDisableProducts?: (products: Product[]) => Promise<void>
@@ -165,6 +169,10 @@ export function ProductCatalog({
         meta: { className: '' },
         cell: ({ row }) => (
           <div className='flex items-center space-x-2'>
+            <ProductImage
+              title={row.original.title}
+              imageUrl={row.original.imageUrl}
+            />
             <Badge variant='outline'>{row.original.category}</Badge>
             <span
               className='max-w-72 truncate font-medium'
