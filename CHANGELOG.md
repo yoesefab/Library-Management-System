@@ -4,6 +4,8 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Harmonisation de la modification d’un produit avec le dialogue et le formulaire shadcn utilisés pour sa création, préremplis avec les informations du catalogue.
+
 - Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.
 
 - Filtres serveur des utilisateurs par rôle et statut, tri global par nom/e-mail, réinitialisation, actualisation et choix de 10 à 100 lignes par page ; comptage et pagination après filtrage.
