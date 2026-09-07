@@ -84,7 +84,7 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                  <Link to='/administration'>
+                  <Link to='/profile'>
                     <UserRound />
                     Mon profil
                   </Link>

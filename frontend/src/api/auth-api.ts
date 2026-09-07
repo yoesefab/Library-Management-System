@@ -13,6 +13,19 @@ export const authApi = {
     }),
   me: (signal?: AbortSignal) =>
     apiRequest<UserProfile>('/api/auth/me', { signal }),
+  updateProfile: (profile: { fullName: string; email: string }) =>
+    apiRequest<UserProfile>('/api/auth/me', {
+      method: 'PUT',
+      body: profile,
+    }),
+  updatePassword: (passwords: {
+    currentPassword: string
+    newPassword: string
+  }) =>
+    apiRequest<void>('/api/auth/me/password', {
+      method: 'PUT',
+      body: passwords,
+    }),
   logout: async () => {
     await apiRequest<void>('/api/auth/logout', { method: 'POST' })
     resetCsrfToken()

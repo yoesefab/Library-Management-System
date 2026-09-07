@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedUnauthorizedRouteImport } from './routes/_authenticated/unauthorized'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedLogsRouteImport } from './routes/_authenticated/logs'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedForecastingRouteImport } from './routes/_authenticated/forecasting'
@@ -79,6 +80,11 @@ const AuthenticatedUnauthorizedRoute =
 const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLogsRoute = AuthenticatedLogsRouteImport.update({
@@ -324,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/forecasting': typeof AuthenticatedForecastingRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/logs': typeof AuthenticatedLogsRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/unauthorized': typeof AuthenticatedUnauthorizedRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
@@ -367,6 +374,7 @@ export interface FileRoutesByTo {
   '/forecasting': typeof AuthenticatedForecastingRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/logs': typeof AuthenticatedLogsRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/unauthorized': typeof AuthenticatedUnauthorizedRoute
   '/': typeof AuthenticatedIndexRoute
@@ -416,6 +424,7 @@ export interface FileRoutesById {
   '/_authenticated/forecasting': typeof AuthenticatedForecastingRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/logs': typeof AuthenticatedLogsRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/unauthorized': typeof AuthenticatedUnauthorizedRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -464,6 +473,7 @@ export interface FileRouteTypes {
     | '/forecasting'
     | '/inventory'
     | '/logs'
+    | '/profile'
     | '/reports'
     | '/unauthorized'
     | '/errors/$error'
@@ -507,6 +517,7 @@ export interface FileRouteTypes {
     | '/forecasting'
     | '/inventory'
     | '/logs'
+    | '/profile'
     | '/reports'
     | '/unauthorized'
     | '/'
@@ -555,6 +566,7 @@ export interface FileRouteTypes {
     | '/_authenticated/forecasting'
     | '/_authenticated/inventory'
     | '/_authenticated/logs'
+    | '/_authenticated/profile'
     | '/_authenticated/reports'
     | '/_authenticated/unauthorized'
     | '/_authenticated/'
@@ -632,6 +644,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/logs': {
@@ -955,6 +974,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedForecastingRoute: typeof AuthenticatedForecastingRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedLogsRoute: typeof AuthenticatedLogsRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedUnauthorizedRoute: typeof AuthenticatedUnauthorizedRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -982,6 +1002,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedForecastingRoute: AuthenticatedForecastingRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedLogsRoute: AuthenticatedLogsRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedUnauthorizedRoute: AuthenticatedUnauthorizedRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
