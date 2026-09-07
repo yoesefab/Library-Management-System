@@ -27,12 +27,15 @@ services:
       DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-maarif_analytics}
       POSTGRES_USER: ${POSTGRES_USER:-maarif}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Définir POSTGRES_PASSWORD dans .env}
+      PRODUCT_IMAGE_DIRECTORY: /app/data/product-images
       BACKEND_PORT: 8080
       BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Africa/Casablanca}
       BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-}
       BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
       BOOTSTRAP_ADMIN_NAME: ${BOOTSTRAP_ADMIN_NAME:-Administrateur Maarif}
       DEMO_DATA_ENABLED: ${DEMO_DATA_ENABLED:-false}
+    volumes:
+      - product-images:/app/data/product-images
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     depends_on:
@@ -64,3 +67,4 @@ services:
 
 volumes:
   postgres-data:
+  product-images:

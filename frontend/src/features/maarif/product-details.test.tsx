@@ -46,6 +46,8 @@ describe('ProductDetails', () => {
 
     expect(onDisable).toHaveBeenCalledWith(product.sku)
     await expect.element(screen.getByText('Produit désactivé')).toBeVisible()
-    await expect.element(screen.getByText('Désactivé')).toBeVisible()
+    await expect
+      .element(screen.getByText('Désactivé', { exact: true }))
+      .toBeVisible()
   })
 })

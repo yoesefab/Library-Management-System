@@ -30,6 +30,9 @@ describe('ProductCreateDialog', () => {
     )
 
     await expect
+      .element(screen.getByText('Image du produit', { exact: true }))
+      .toBeVisible()
+    await expect
       .element(screen.getByRole('heading', { name: 'Modifier le produit' }))
       .toBeVisible()
     await expect
@@ -47,7 +50,8 @@ describe('ProductCreateDialog', () => {
       expect.objectContaining({
         sku: 'LIV-000184',
         title: 'L’Étranger — édition révisée',
-      })
+      }),
+      undefined
     )
   })
 

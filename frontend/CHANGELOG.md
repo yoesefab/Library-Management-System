@@ -1,5 +1,11 @@
 ## Connexion au backend (2026-09-05)
 
+- Compatibilité avec la base locale : conservation de V3 (préférences dashboard) et application du champ image via V4 ; index unique nullable compatible PostgreSQL/H2.
+
+- Rétablissement du build Docker frontend, prise en charge des uploads jusqu’à 5 Mo par le proxy et stockage persistant des images avec les permissions backend nécessaires.
+
+- Simplification de tous les menus de profil : suppression de l'action Paramètres, maintien du lien Mon profil vers `/profile` et de l'action Se déconnecter.
+
 - Harmonisation de la modification d’un produit avec le dialogue et le formulaire shadcn utilisés pour sa création, préremplis avec les informations du catalogue.
 
 - Alignement de la page Utilisateurs sur Produits : même tableau partagé, filtres à facettes multisélection, recherche instantanée, tri des colonnes, menu Affichage, sélection et pagination ; suppression de la carte et de la barre de filtres spécifique.

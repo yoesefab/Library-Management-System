@@ -13,6 +13,7 @@ RUN apt-get update \
     && useradd --system --gid app app
 WORKDIR /app
 COPY --from=build /workspace/target/maarif-analytics-backend-*.jar app.jar
+RUN mkdir -p /app/data/product-images && chown -R app:app /app/data
 USER app
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

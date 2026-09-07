@@ -41,6 +41,16 @@ docker compose up --build
 - Swagger UI: <http://localhost:8080/swagger-ui.html>
 - OpenAPI JSON: <http://localhost:8080/v3/api-docs>
 
+Pour mettre à jour une installation Docker existante après récupération du code :
+
+```bash
+docker compose up -d --build backend frontend
+```
+
+Rechargez ensuite la page. Dans **Produits → Nouveau produit** ou **Modifier**, le champ **Image du produit** accepte JPG, PNG et WebP jusqu’à 5 Mo. Les images sont conservées dans le volume `product-images`, y compris après reconstruction des conteneurs.
+
+La base locale utilise V3 pour les préférences dashboard ; le champ image est ajouté par V4. Ne modifiez pas les migrations déjà appliquées.
+
 ## Démarrage local
 
 ```bash
