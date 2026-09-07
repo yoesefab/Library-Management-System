@@ -4,6 +4,8 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Simplification du menu de profil de la barre latérale : seules les actions « Mon profil », reliée à la page de profil, et « Se déconnecter » sont désormais proposées.
+
 - Ajout d’une page « Mon profil » connectée permettant à chaque utilisateur authentifié de modifier son nom, son adresse e-mail et son mot de passe avec vérification du mot de passe actuel et traçabilité des changements.
 
 - Réécriture complète du README racine avec présentation fonctionnelle, architecture, démarrage Docker, développement local, sécurité, démonstration, vérifications et index documentaire.
