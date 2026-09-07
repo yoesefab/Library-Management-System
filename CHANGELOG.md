@@ -4,6 +4,8 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Ajout de 15 couvertures originales au catalogue synthétique ; leur chargement est idempotent et préserve les images produit personnalisées.
+
 - Stabilisation des tests navigateur du profil en précompilant la dépendance d’avatar utilisée par ses composants.
 
 - Compatibilité avec la base locale : conservation de V3 (préférences dashboard) et application du champ image via V4 ; index unique nullable compatible PostgreSQL/H2.

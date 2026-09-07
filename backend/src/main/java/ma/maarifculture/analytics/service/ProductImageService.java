@@ -47,6 +47,24 @@ public class ProductImageService {
     }
 
     @Transactional
+    public boolean installBundledDemoCover(Product product, Resource cover) {
+        if (product.getImageKey() != null) {
+            return false;
+        }
+
+        String key = "demo-" + product.getSku() + ".jpg";
+        Path destination = resolve(key);
+        try (var input = cover.getInputStream()) {
+            Files.copy(input, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new IllegalStateException("Impossible d’installer l’image de démonstration du produit.", e);
+        }
+        product.setImageKey(key);
+        products.saveAndFlush(product);
+        return true;
+    }
+
+    @Transactional
     public ProductDetailResponse remove(Long id) { Product product=required(id); String old=product.getImageKey(); product.setImageKey(null); products.saveAndFlush(product); deleteQuietly(old); return mapper.toDetail(product); }
 
     public StoredImage load(Long id) {

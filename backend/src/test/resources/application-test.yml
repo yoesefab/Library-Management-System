@@ -11,3 +11,6 @@ spring:
     locations: classpath:db/migration
     clean-disabled: true
 
+maarif:
+  images:
+    directory: ${java.io.tmpdir}/maarif-analytics-tests/${random.uuid}

@@ -18,6 +18,7 @@ import ma.maarifculture.analytics.repository.InventoryMovementRepository;
 import ma.maarifculture.analytics.repository.ProductRepository;
 import ma.maarifculture.analytics.repository.PublisherRepository;
 import ma.maarifculture.analytics.repository.SupplierRepository;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ public class DemoDataService {
     private final ProductRepository products;
     private final InventoryMovementRepository movements;
     private final InventoryService inventoryService;
+    private final ProductImageService productImageService;
     private final CurrentUserService currentUserService;
     private final AuditService auditService;
 
@@ -44,6 +46,7 @@ public class DemoDataService {
             ProductRepository products,
             InventoryMovementRepository movements,
             InventoryService inventoryService,
+            ProductImageService productImageService,
             CurrentUserService currentUserService,
             AuditService auditService) {
         this.categories = categories;
@@ -53,6 +56,7 @@ public class DemoDataService {
         this.products = products;
         this.movements = movements;
         this.inventoryService = inventoryService;
+        this.productImageService = productImageService;
         this.currentUserService = currentUserService;
         this.auditService = auditService;
     }
@@ -92,6 +96,9 @@ public class DemoDataService {
                         "Stock initial du jeu de démonstration synthétique"));
                 counters.initialMovementsCreated++;
             }
+
+            productImageService.installBundledDemoCover(
+                    product, new ClassPathResource("demo/product-images/" + spec.sku() + ".jpg"));
         }
 
         auditService.record(
