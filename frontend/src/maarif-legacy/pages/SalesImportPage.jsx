@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
   ArrowLeft,
-  ArrowClockwise,
   ArrowRight,
   CheckCircle,
   CircleNotch,
@@ -13,6 +12,7 @@ import {
   WarningCircle,
   X,
 } from '@phosphor-icons/react'
+import { ArrowUpRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -237,10 +237,17 @@ export function SalesImportPage({ onConfirm, onOpenHistory, onPreview }) {
           </span>
         </div>
         <div className='flex flex-wrap items-center gap-4'>
-          <Button variant='outline' onClick={onOpenHistory} type='button'>
-            <ArrowClockwise aria-hidden='true' />
-            Historique
-          </Button>
+          <Badge asChild>
+            <a
+              href='/imports/history'
+              onClick={(event) => {
+                event.preventDefault()
+                onOpenHistory()
+              }}
+            >
+              Historique <ArrowUpRightIcon data-icon='inline-end' />
+            </a>
+          </Badge>
         </div>
       </header>
 

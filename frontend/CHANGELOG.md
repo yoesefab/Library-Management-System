@@ -1,5 +1,7 @@
 ## Connexion au backend (2026-09-05)
 
+- Remplacement du bouton d’accès à l’historique des imports par un badge-lien shadcn avec une icône de lien externe.
+
 - Stabilisation des tests navigateur du profil en précompilant la dépendance d’avatar utilisée par ses composants.
 
 - Compatibilité avec la base locale : conservation de V3 (préférences dashboard) et application du champ image via V4 ; index unique nullable compatible PostgreSQL/H2.
