@@ -22,9 +22,9 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { DateRangePicker } from '@/components/date-range-picker'
 import { ReportFilter } from '@/features/maarif/report-filter'
 import {
   DEFAULT_FILTERS,
@@ -70,7 +70,6 @@ const REPORT_OPTIONS = [
 ]
 
 export function ReportsPage({ onExport }) {
-  const [query, setQuery] = useState('')
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [selectedReportId, setSelectedReportId] = useState('sales')
   const [exportState, setExportState] = useState(null)
@@ -88,6 +87,20 @@ export function ReportsPage({ onExport }) {
   const selectReport = (id) => {
     setSelectedReportId(id)
     setExportState(null)
+  }
+
+  const updatePeriod = (range) => {
+    if (!range.from || !range.to) return
+    const formatDate = (date) =>
+      date.toLocaleDateString('fr-MA', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    updateFilter(
+      'period',
+      `${formatDate(range.from)} – ${formatDate(range.to)}`
+    )
   }
 
   const handleExport = async (format) => {
@@ -222,11 +235,7 @@ export function ReportsPage({ onExport }) {
             aria-labelledby='report-options-title'
             className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'
           >
-            {REPORT_OPTIONS.filter((option) =>
-              `${option.title} ${option.description}`
-                .toLocaleLowerCase('fr')
-                .includes(query.trim().toLocaleLowerCase('fr'))
-            ).map((option) => {
+            {REPORT_OPTIONS.map((option) => {
               const Icon = option.icon
               return (
                 <Label
@@ -258,15 +267,6 @@ export function ReportsPage({ onExport }) {
               )
             })}
           </RadioGroup>
-          {!REPORT_OPTIONS.some((option) =>
-            `${option.title} ${option.description}`
-              .toLocaleLowerCase('fr')
-              .includes(query.trim().toLocaleLowerCase('fr'))
-          ) && (
-            <p className='py-6 text-center text-sm text-muted-foreground'>
-              Aucun rapport trouvé.
-            </p>
-          )}
         </CardContent>
       </Card>
       <div className='grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]'>
