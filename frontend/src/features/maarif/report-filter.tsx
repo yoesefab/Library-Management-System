@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -8,6 +10,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -39,11 +42,22 @@ export function ReportFilter({
           disabled={disabled}
           aria-label={title}
         >
-          <span className='min-w-0 flex-1 truncate text-left'>{value}</span>
-          <ChevronsUpDown className='ml-auto size-3.5 opacity-50' />
+          <PlusCircledIcon className='size-4' />
+          {title}
+          {value !== defaultValue && (
+            <>
+              <Separator orientation='vertical' className='mx-2 h-4' />
+              <Badge
+                variant='secondary'
+                className='max-w-40 truncate rounded-sm px-1 font-normal'
+              >
+                {value}
+              </Badge>
+            </>
+          )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-64 p-0' align='start'>
+      <PopoverContent className='w-50 p-0' align='start'>
         <Command>
           <CommandInput
             placeholder={`Rechercher : ${title.toLocaleLowerCase('fr')}`}
@@ -60,13 +74,36 @@ export function ReportFilter({
                     setOpen(false)
                   }}
                 >
-                  <Check
-                    className={option === value ? 'opacity-100' : 'opacity-0'}
-                  />
+                  <div
+                    className={cn(
+                      'flex size-4 items-center justify-center rounded-sm border border-primary',
+                      option === value
+                        ? 'bg-primary text-primary-foreground'
+                        : 'opacity-50 [&_svg]:invisible'
+                    )}
+                  >
+                    <CheckIcon className='size-4 text-background' />
+                  </div>
                   {option}
                 </CommandItem>
               ))}
             </CommandGroup>
+            {value !== defaultValue && (
+              <>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem
+                    className='justify-center text-center'
+                    onSelect={() => {
+                      onChange(defaultValue)
+                      setOpen(false)
+                    }}
+                  >
+                    Effacer le filtre
+                  </CommandItem>
+                </CommandGroup>
+              </>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

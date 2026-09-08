@@ -133,3 +133,4 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Correction du chargement de la page Rapports en réutilisant son sélecteur de période compatible avec l’espace métier existant.
 - Suppression du conflit de déclaration du sélecteur de période qui bloquait la compilation du frontend.
 - Harmonisation des filtres de la page Rapports avec les filtres compacts utilisés au-dessus des tableaux.
+- Alignement visuel et comportemental des filtres de rapports sur les filtres à facettes des tableaux, avec sélection cochée et action d’effacement.
