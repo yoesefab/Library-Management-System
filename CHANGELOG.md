@@ -4,6 +4,8 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Simplification de l’en-tête d’import des ventes avec une action « Historique » directe et sans rappel du fuseau métier.
+
 - Ajout de 15 couvertures originales au catalogue synthétique ; leur chargement est idempotent et préserve les images produit personnalisées.
 
 - Stabilisation des tests navigateur du profil en précompilant la dépendance d’avatar utilisée par ses composants.

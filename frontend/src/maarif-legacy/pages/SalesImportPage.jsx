@@ -236,15 +236,11 @@ export function SalesImportPage({ onConfirm, onOpenHistory, onPreview }) {
             enregistrement.
           </span>
         </div>
-        <div className='flex flex-wrap items-center gap-4 [&_span]:text-xs [&_strong]:block [&_strong]:text-xs'>
+        <div className='flex flex-wrap items-center gap-4'>
           <Button variant='outline' onClick={onOpenHistory} type='button'>
             <ArrowClockwise aria-hidden='true' />
-            Voir l’historique
+            Historique
           </Button>
-          <div>
-            <strong>Fuseau métier</strong>
-            <span>Africa/Casablanca</span>
-          </div>
         </div>
       </header>
 
