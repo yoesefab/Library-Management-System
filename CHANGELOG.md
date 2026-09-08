@@ -129,3 +129,10 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 - Ajout de la gestion sécurisée des images produit (JPG, PNG et WebP, 5 Mo maximum), avec téléversement, remplacement, suppression et URLs API stables.
 - Ajout des images et d’un visuel de remplacement accessible dans le catalogue, la fiche produit et les données produit des stocks, alertes, commandes, prévisions et tableaux de bord.
+- Regroupement des filtres et du choix du rapport dans une seule carte sur la page Rapports, avec un sélecteur de période complet et sans recherche superflue.
+- Correction du chargement de la page Rapports en réutilisant son sélecteur de période compatible avec l’espace métier existant.
+- Suppression du conflit de déclaration du sélecteur de période qui bloquait la compilation du frontend.
+- Harmonisation des filtres de la page Rapports avec les filtres compacts utilisés au-dessus des tableaux.
+- Alignement visuel et comportemental des filtres de rapports sur les filtres à facettes des tableaux, avec sélection cochée et action d’effacement.
+- Correction des références résiduelles des filtres de rapports afin de garantir leur compilation dans l’image frontend.
+- Suppression de l’import de séparateur de commande inutilisé afin de satisfaire la compilation TypeScript stricte du frontend.
