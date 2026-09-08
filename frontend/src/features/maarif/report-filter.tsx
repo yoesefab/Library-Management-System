@@ -17,19 +17,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Separator } from '@/components/ui/separator'
 
 export function ReportFilter({
   title,
   value,
-  defaultValue,
   options,
   disabled,
   onChange,
 }: {
   title: string
   value: string
-  defaultValue: string
   options: string[]
   disabled?: boolean
   onChange: (value: string) => void
@@ -41,7 +38,7 @@ export function ReportFilter({
         <Button
           variant='outline'
           size='sm'
-          className='h-8 border-dashed'
+          className='h-9 w-full justify-start border-dashed bg-background'
           disabled={disabled}
           aria-label={title}
         >
