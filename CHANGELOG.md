@@ -129,4 +129,5 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 - Ajout de la gestion sécurisée des images produit (JPG, PNG et WebP, 5 Mo maximum), avec téléversement, remplacement, suppression et URLs API stables.
 - Ajout des images et d’un visuel de remplacement accessible dans le catalogue, la fiche produit et les données produit des stocks, alertes, commandes, prévisions et tableaux de bord.
-- Regroupement des filtres et du choix du rapport dans une seule carte sur la page Rapports, avec un sélecteur de période complet et sans recherche superflue.
+
+- Regroupement des filtres et du choix du rapport dans une seule carte sur la page Rapports.
