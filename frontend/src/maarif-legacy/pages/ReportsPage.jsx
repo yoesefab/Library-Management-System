@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { DateRangePicker } from '@/components/date-range-picker'
 import { ReportFilter } from '@/features/maarif/report-filter'
 import { DateRangePicker as ReportDateRangePicker } from '../shared/DateRangePicker.jsx'
 import {
@@ -87,6 +88,20 @@ export function ReportsPage({ onExport }) {
   const selectReport = (id) => {
     setSelectedReportId(id)
     setExportState(null)
+  }
+
+  const updatePeriod = (range) => {
+    if (!range.from || !range.to) return
+    const formatDate = (date) =>
+      date.toLocaleDateString('fr-MA', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    updateFilter(
+      'period',
+      `${formatDate(range.from)} – ${formatDate(range.to)}`
+    )
   }
 
   const handleExport = async (format) => {
