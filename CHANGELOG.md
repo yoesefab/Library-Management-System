@@ -134,3 +134,4 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Suppression du conflit de déclaration du sélecteur de période qui bloquait la compilation du frontend.
 - Harmonisation des filtres de la page Rapports avec les filtres compacts utilisés au-dessus des tableaux.
 - Alignement visuel et comportemental des filtres de rapports sur les filtres à facettes des tableaux, avec sélection cochée et action d’effacement.
+- Correction des références résiduelles des filtres de rapports afin de garantir leur compilation dans l’image frontend.

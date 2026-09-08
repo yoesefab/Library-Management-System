@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -32,6 +31,8 @@ export function ReportFilter({
   onChange: (value: string) => void
 }) {
   const [open, setOpen] = useState(false)
+  const defaultValue = options[0]
+  const isFiltered = value !== defaultValue
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -44,15 +45,12 @@ export function ReportFilter({
         >
           <PlusCircledIcon className='size-4' />
           {title}
-          {value !== defaultValue && (
+          {isFiltered && (
             <>
-              <Separator orientation='vertical' className='mx-2 h-4' />
-              <Badge
-                variant='secondary'
-                className='max-w-40 truncate rounded-sm px-1 font-normal'
-              >
+              <span aria-hidden className='mx-2 h-4 border-l' />
+              <span className='max-w-40 truncate rounded-sm bg-secondary px-1 font-normal text-secondary-foreground'>
                 {value}
-              </Badge>
+              </span>
             </>
           )}
         </Button>
@@ -88,21 +86,18 @@ export function ReportFilter({
                 </CommandItem>
               ))}
             </CommandGroup>
-            {value !== defaultValue && (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
-                  <CommandItem
-                    className='justify-center text-center'
-                    onSelect={() => {
-                      onChange(defaultValue)
-                      setOpen(false)
-                    }}
-                  >
-                    Effacer le filtre
-                  </CommandItem>
-                </CommandGroup>
-              </>
+            {isFiltered && (
+              <div className='border-t p-1'>
+                <CommandItem
+                  className='justify-center text-center'
+                  onSelect={() => {
+                    onChange(defaultValue)
+                    setOpen(false)
+                  }}
+                >
+                  Effacer le filtre
+                </CommandItem>
+              </div>
             )}
           </CommandList>
         </Command>

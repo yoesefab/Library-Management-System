@@ -211,7 +211,6 @@ export function ReportsPage({ onExport }) {
                 key={definition.key}
                 title={definition.label}
                 value={filters[definition.key]}
-                defaultValue={DEFAULT_FILTERS[definition.key]}
                 options={definition.options}
                 disabled={isGenerating}
                 onChange={(value) => updateFilter(definition.key, value)}
