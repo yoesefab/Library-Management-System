@@ -131,3 +131,4 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Ajout des images et d’un visuel de remplacement accessible dans le catalogue, la fiche produit et les données produit des stocks, alertes, commandes, prévisions et tableaux de bord.
 - Regroupement des filtres et du choix du rapport dans une seule carte sur la page Rapports, avec un sélecteur de période complet et sans recherche superflue.
 - Correction du chargement de la page Rapports en réutilisant son sélecteur de période compatible avec l’espace métier existant.
+- Suppression du conflit de déclaration du sélecteur de période qui bloquait la compilation du frontend.
