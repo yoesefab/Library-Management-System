@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Check, PlusCircle } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { Check, ChevronsUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -15,19 +14,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Separator } from '@/components/ui/separator'
 
 export function ReportFilter({
   title,
   value,
-  defaultValue,
   options,
   disabled,
   onChange,
 }: {
   title: string
   value: string
-  defaultValue: string
   options: string[]
   disabled?: boolean
   onChange: (value: string) => void
@@ -39,23 +35,12 @@ export function ReportFilter({
         <Button
           variant='outline'
           size='sm'
-          className='h-8 border-dashed'
+          className='h-9 w-full justify-start border-dashed bg-background'
           disabled={disabled}
           aria-label={title}
         >
-          <PlusCircle />
-          {title}
-          {value !== defaultValue && (
-            <>
-              <Separator orientation='vertical' className='mx-1 h-4' />
-              <Badge
-                variant='secondary'
-                className='max-w-40 truncate rounded-sm px-1 font-normal'
-              >
-                {value}
-              </Badge>
-            </>
-          )}
+          <span className='min-w-0 flex-1 truncate text-left'>{value}</span>
+          <ChevronsUpDown className='ml-auto size-3.5 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-64 p-0' align='start'>

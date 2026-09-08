@@ -22,9 +22,9 @@ import {
   CardDescription,
   CardContent,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { DateRangePicker } from '@/components/date-range-picker'
 import { ReportFilter } from '@/features/maarif/report-filter'
 import {
   DEFAULT_FILTERS,
@@ -70,7 +70,6 @@ const REPORT_OPTIONS = [
 ]
 
 export function ReportsPage({ onExport }) {
-  const [query, setQuery] = useState('')
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [selectedReportId, setSelectedReportId] = useState('sales')
   const [exportState, setExportState] = useState(null)
@@ -88,6 +87,20 @@ export function ReportsPage({ onExport }) {
   const selectReport = (id) => {
     setSelectedReportId(id)
     setExportState(null)
+  }
+
+  const updatePeriod = (range) => {
+    if (!range.from || !range.to) return
+    const formatDate = (date) =>
+      date.toLocaleDateString('fr-MA', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    updateFilter(
+      'period',
+      `${formatDate(range.from)} – ${formatDate(range.to)}`
+    )
   }
 
   const handleExport = async (format) => {
@@ -169,62 +182,76 @@ export function ReportsPage({ onExport }) {
     <div className='flex min-w-0 flex-col gap-6'>
       <Card>
         <CardHeader>
-          <CardTitle>Définir le périmètre</CardTitle>
-          <CardDescription>
-            Choisissez les données à inclure dans votre rapport.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className='flex flex-wrap items-center gap-2'>
-            <Input
-              aria-label='Rechercher un rapport'
-              placeholder='Rechercher un rapport…'
-              value={query}
-              disabled={isGenerating}
-              onChange={(event) => setQuery(event.target.value)}
-              className='h-8 w-37.5 lg:w-62.5'
-            />
-            {FILTER_DEFINITIONS.map((definition) => (
-              <ReportFilter
-                key={definition.key}
-                title={definition.label}
-                value={filters[definition.key]}
-                defaultValue={DEFAULT_FILTERS[definition.key]}
-                options={definition.options}
-                disabled={isGenerating}
-                onChange={(value) => updateFilter(definition.key, value)}
-              />
-            ))}
-            {(query ||
-              FILTER_DEFINITIONS.some(
-                (definition) =>
-                  filters[definition.key] !== DEFAULT_FILTERS[definition.key]
-              )) && (
-              <Button
-                variant='ghost'
-                className='h-8 px-2 lg:px-3'
-                disabled={isGenerating}
-                onClick={() => {
-                  setFilters(DEFAULT_FILTERS)
-                  setQuery('')
-                  setExportState(null)
-                }}
-              >
-                Réinitialiser
-                <X />
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
           <CardTitle id='report-options-title'>Choisir un rapport</CardTitle>
           <CardDescription>
             Un seul rapport peut être exporté à la fois.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='space-y-5'>
+          <section
+            aria-labelledby='report-scope-title'
+            className='rounded-xl border bg-muted/30 p-4'
+          >
+            <div className='mb-4 flex flex-wrap items-start justify-between gap-3'>
+              <div>
+                <h3 id='report-scope-title' className='text-sm font-semibold'>
+                  Périmètre du rapport
+                </h3>
+                <p className='mt-1 text-xs text-muted-foreground'>
+                  Affinez les données qui seront incluses dans l’export.
+                </p>
+              </div>
+              {FILTER_DEFINITIONS.some(
+                (definition) =>
+                  filters[definition.key] !== DEFAULT_FILTERS[definition.key]
+              ) && (
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  disabled={isGenerating}
+                  onClick={() => {
+                    setFilters(DEFAULT_FILTERS)
+                    setExportState(null)
+                  }}
+                >
+                  Réinitialiser
+                  <X />
+                </Button>
+              )}
+            </div>
+            <fieldset
+              disabled={isGenerating}
+              className='grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.5fr)_repeat(4,minmax(0,1fr))]'
+            >
+              <div className='space-y-1.5'>
+                <Label className='text-xs text-muted-foreground'>Période</Label>
+                <DateRangePicker
+                  key={filters.period}
+                  align='start'
+                  initialDateFrom={new Date(2026, 7, 1)}
+                  initialDateTo={new Date(2026, 7, 27)}
+                  locale='fr-MA'
+                  onUpdate={updatePeriod}
+                />
+              </div>
+              {FILTER_DEFINITIONS.filter(
+                (definition) => definition.key !== 'period'
+              ).map((definition) => (
+                <div key={definition.key} className='space-y-1.5'>
+                  <Label className='text-xs text-muted-foreground'>
+                    {definition.label}
+                  </Label>
+                  <ReportFilter
+                    title={definition.label}
+                    value={filters[definition.key]}
+                    options={definition.options}
+                    disabled={isGenerating}
+                    onChange={(value) => updateFilter(definition.key, value)}
+                  />
+                </div>
+              ))}
+            </fieldset>
+          </section>
           <RadioGroup
             value={selectedReportId}
             disabled={isGenerating}
@@ -232,11 +259,7 @@ export function ReportsPage({ onExport }) {
             aria-labelledby='report-options-title'
             className='grid gap-4 md:grid-cols-2 xl:grid-cols-3'
           >
-            {REPORT_OPTIONS.filter((option) =>
-              `${option.title} ${option.description}`
-                .toLocaleLowerCase('fr')
-                .includes(query.trim().toLocaleLowerCase('fr'))
-            ).map((option) => {
+            {REPORT_OPTIONS.map((option) => {
               const Icon = option.icon
               return (
                 <Label
@@ -268,15 +291,6 @@ export function ReportsPage({ onExport }) {
               )
             })}
           </RadioGroup>
-          {!REPORT_OPTIONS.some((option) =>
-            `${option.title} ${option.description}`
-              .toLocaleLowerCase('fr')
-              .includes(query.trim().toLocaleLowerCase('fr'))
-          ) && (
-            <p className='py-6 text-center text-sm text-muted-foreground'>
-              Aucun rapport trouvé.
-            </p>
-          )}
         </CardContent>
       </Card>
       <div className='grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]'>
