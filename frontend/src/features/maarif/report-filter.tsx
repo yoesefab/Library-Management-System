@@ -60,7 +60,7 @@ export function ReportFilter({
           <CommandInput
             placeholder={`Rechercher : ${title.toLocaleLowerCase('fr')}`}
           />
-          <CommandList>
+          <CommandList className='max-h-72'>
             <CommandEmpty>Aucun résultat.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (

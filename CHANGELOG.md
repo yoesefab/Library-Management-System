@@ -135,3 +135,4 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Harmonisation des filtres de la page Rapports avec les filtres compacts utilisés au-dessus des tableaux.
 - Alignement visuel et comportemental des filtres de rapports sur les filtres à facettes des tableaux, avec sélection cochée et action d’effacement.
 - Correction des références résiduelles des filtres de rapports afin de garantir leur compilation dans l’image frontend.
+- Suppression de l’import de séparateur de commande inutilisé afin de satisfaire la compilation TypeScript stricte du frontend.
