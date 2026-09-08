@@ -169,12 +169,12 @@ export function ReportsPage({ onExport }) {
     <div className='flex min-w-0 flex-col gap-6'>
       <Card>
         <CardHeader>
-          <CardTitle>Définir le périmètre</CardTitle>
+          <CardTitle id='report-options-title'>Choisir un rapport</CardTitle>
           <CardDescription>
-            Choisissez les données à inclure dans votre rapport.
+            Un seul rapport peut être exporté à la fois.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='space-y-4'>
           <div className='flex flex-wrap items-center gap-2'>
             <Input
               aria-label='Rechercher un rapport'
@@ -215,16 +215,6 @@ export function ReportsPage({ onExport }) {
               </Button>
             )}
           </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle id='report-options-title'>Choisir un rapport</CardTitle>
-          <CardDescription>
-            Un seul rapport peut être exporté à la fois.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
           <RadioGroup
             value={selectedReportId}
             disabled={isGenerating}
