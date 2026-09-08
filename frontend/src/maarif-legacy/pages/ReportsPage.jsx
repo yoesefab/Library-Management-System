@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { DateRangePicker } from '@/components/date-range-picker'
+import { DateRangePicker as ReportPeriodPicker } from '@/components/date-range-picker'
 import { ReportFilter } from '@/features/maarif/report-filter'
 import { DateRangePicker as ReportDateRangePicker } from '../shared/DateRangePicker.jsx'
 import {
@@ -189,66 +189,52 @@ export function ReportsPage({ onExport }) {
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-5'>
-          <section
-            aria-labelledby='report-scope-title'
-            className='rounded-xl border bg-muted/30 p-4'
+          <fieldset
+            aria-label='Filtres du rapport'
+            disabled={isGenerating}
+            className='flex flex-wrap items-center gap-2 border-b pb-5'
           >
-            <div className='mb-4 flex flex-wrap items-start justify-between gap-3'>
-              <div>
-                <h3 id='report-scope-title' className='text-sm font-semibold'>
-                  Périmètre du rapport
-                </h3>
-                <p className='mt-1 text-xs text-muted-foreground'>
-                  Affinez les données qui seront incluses dans l’export.
-                </p>
-              </div>
-              {FILTER_DEFINITIONS.some(
-                (definition) =>
-                  filters[definition.key] !== DEFAULT_FILTERS[definition.key]
-              ) && (
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  disabled={isGenerating}
-                  onClick={() => {
-                    setFilters(DEFAULT_FILTERS)
-                    setExportState(null)
-                  }}
-                >
-                  Réinitialiser
-                  <X />
-                </Button>
-              )}
+            <div className='w-full sm:w-56 [&_button]:h-8'>
+              <ReportPeriodPicker
+                key={filters.period}
+                align='start'
+                initialDateFrom={new Date(2026, 7, 1)}
+                initialDateTo={new Date(2026, 7, 27)}
+                locale='fr-MA'
+                onUpdate={updatePeriod}
+              />
             </div>
-            <fieldset
-              disabled={isGenerating}
-              className='grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(15rem,1.5fr)_repeat(4,minmax(0,1fr))]'
-            >
-              <div className='space-y-1.5'>
-                <ReportDateRangePicker
-                  label='Période'
-                  value={filters.period}
-                  onChange={(value) => updateFilter('period', value)}
-                />
-              </div>
-              {FILTER_DEFINITIONS.filter(
-                (definition) => definition.key !== 'period'
-              ).map((definition) => (
-                <div key={definition.key} className='space-y-1.5'>
-                  <Label className='text-xs text-muted-foreground'>
-                    {definition.label}
-                  </Label>
-                  <ReportFilter
-                    title={definition.label}
-                    value={filters[definition.key]}
-                    options={definition.options}
-                    disabled={isGenerating}
-                    onChange={(value) => updateFilter(definition.key, value)}
-                  />
-                </div>
-              ))}
-            </fieldset>
-          </section>
+            {FILTER_DEFINITIONS.filter(
+              (definition) => definition.key !== 'period'
+            ).map((definition) => (
+              <ReportFilter
+                key={definition.key}
+                title={definition.label}
+                value={filters[definition.key]}
+                defaultValue={DEFAULT_FILTERS[definition.key]}
+                options={definition.options}
+                disabled={isGenerating}
+                onChange={(value) => updateFilter(definition.key, value)}
+              />
+            ))}
+            {FILTER_DEFINITIONS.some(
+              (definition) =>
+                filters[definition.key] !== DEFAULT_FILTERS[definition.key]
+            ) && (
+              <Button
+                variant='ghost'
+                className='h-8 px-2 lg:px-3'
+                disabled={isGenerating}
+                onClick={() => {
+                  setFilters(DEFAULT_FILTERS)
+                  setExportState(null)
+                }}
+              >
+                Réinitialiser
+                <X />
+              </Button>
+            )}
+          </fieldset>
           <RadioGroup
             value={selectedReportId}
             disabled={isGenerating}
