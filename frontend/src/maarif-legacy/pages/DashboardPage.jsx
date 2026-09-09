@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import {
   Archive,
   BookOpen,
@@ -18,6 +19,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import {
+  getMotionState,
+  staggerContainerVariants,
+  staggerItemVariants,
+} from '@/lib/motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const KPI_DATA = [
@@ -261,6 +267,7 @@ function DistributionPanel({ title, data }) {
 }
 
 export function DashboardContent(props) {
+  const reduceMotion = useReducedMotion()
   const dashboard = props?.dashboard
   const number = (value) =>
     Number(value ?? 0).toLocaleString('fr-FR', { maximumFractionDigits: 2 })
@@ -320,14 +327,18 @@ export function DashboardContent(props) {
   const languageData = distribution(dashboard?.salesByLanguage, LANGUAGE_DATA)
   return (
     <div className='space-y-4'>
-      <section
+      <motion.section
         aria-label='Indicateurs clés'
         className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6'
+        variants={staggerContainerVariants}
+        {...getMotionState(reduceMotion)}
       >
         {kpis.map((item) => (
-          <KpiCard item={item} key={item.label} />
+          <motion.div key={item.label} variants={staggerItemVariants}>
+            <KpiCard item={item} />
+          </motion.div>
         ))}
-      </section>
+      </motion.section>
 
       <section
         aria-label='Tendances'

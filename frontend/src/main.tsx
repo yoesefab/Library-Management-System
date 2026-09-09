@@ -7,6 +7,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { MotionConfig } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
 import { handleServerError } from '@/lib/handle-server-error'
@@ -100,7 +101,9 @@ if (!rootElement.innerHTML) {
           <ThemeProvider defaultTheme='light' storageKey='maarif-ui-theme'>
             <FontProvider>
               <DirectionProvider>
-                <RouterProvider router={router} />
+                <MotionConfig reducedMotion='user'>
+                  <RouterProvider router={router} />
+                </MotionConfig>
               </DirectionProvider>
             </FontProvider>
           </ThemeProvider>

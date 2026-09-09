@@ -1,5 +1,7 @@
 import { Navigate, Outlet, useLocation } from '@tanstack/react-router'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { getCookie } from '@/lib/cookies'
+import { entranceTransition, getMotionState, pageVariants } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 import { LayoutProvider } from '@/context/layout-provider'
 import { SearchProvider } from '@/context/search-provider'
@@ -15,6 +17,8 @@ type AuthenticatedLayoutProps = {
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const session = useSession()
   const location = useLocation()
+  const reduceMotion = useReducedMotion()
+  const motionState = getMotionState(reduceMotion)
   if (session.loading) return null
   if (!session.user) {
     if (
@@ -48,7 +52,17 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
               'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
             )}
           >
-            {children ?? <Outlet />}
+            <AnimatePresence initial={false} mode='wait'>
+              <motion.div
+                key={location.pathname}
+                className='flex min-h-0 flex-1 flex-col'
+                variants={pageVariants}
+                transition={entranceTransition}
+                {...motionState}
+              >
+                {children ?? <Outlet />}
+              </motion.div>
+            </AnimatePresence>
           </SidebarInset>
         </SidebarProvider>
       </LayoutProvider>

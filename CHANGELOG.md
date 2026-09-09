@@ -4,6 +4,8 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Ajout d’animations Framer Motion discrètes et respectueuses de la réduction des mouvements pour les transitions de pages, les boutons et les dialogues du frontend.
+
 - Regroupement responsive des filtres de la page Rapports sur une même ligne lorsque la largeur disponible le permet.
 
 - Correction du build frontend en supprimant un import TypeScript inutilisé dans le filtre des rapports.

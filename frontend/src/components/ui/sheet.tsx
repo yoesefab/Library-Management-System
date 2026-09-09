@@ -1,7 +1,17 @@
 import * as React from 'react'
 import * as SheetPrimitive from '@radix-ui/react-dialog'
+import { motion, useReducedMotion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
+import {
+  drawerVariants,
+  entranceTransition,
+  getMotionState,
+  overlayVariants,
+} from '@/lib/motion'
 import { cn } from '@/lib/utils'
+
+const MotionSheetOverlay = motion.create(SheetPrimitive.Overlay)
+const MotionSheetContent = motion.create(SheetPrimitive.Content)
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot='sheet' {...props} />
@@ -29,13 +39,14 @@ function SheetOverlay({
   className,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+  const reduceMotion = useReducedMotion()
   return (
-    <SheetPrimitive.Overlay
+    <MotionSheetOverlay
       data-slot='sheet-overlay'
-      className={cn(
-        'fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
-        className
-      )}
+      className={cn('fixed inset-0 z-50 bg-black/50', className)}
+      variants={overlayVariants}
+      transition={entranceTransition}
+      {...getMotionState(reduceMotion)}
       {...props}
     />
   )
@@ -49,23 +60,25 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left'
 }) {
+  const reduceMotion = useReducedMotion()
   return (
     <SheetPortal>
       <SheetOverlay />
-      <SheetPrimitive.Content
+      <MotionSheetContent
         data-slot='sheet-content'
         className={cn(
-          'fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500',
+          'fixed z-50 flex flex-col gap-4 bg-background shadow-lg',
           side === 'right' &&
-            'inset-y-0 inset-e-0 h-full w-3/4 border-s data-[state=closed]:slide-out-to-end data-[state=open]:slide-in-from-end sm:max-w-sm',
+            'inset-y-0 inset-e-0 h-full w-3/4 border-s sm:max-w-sm',
           side === 'left' &&
-            'inset-y-0 inset-s-0 h-full w-3/4 border-e data-[state=closed]:slide-out-to-start data-[state=open]:slide-in-from-start sm:max-w-sm',
-          side === 'top' &&
-            'inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top',
-          side === 'bottom' &&
-            'inset-x-0 bottom-0 h-auto border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
+            'inset-y-0 inset-s-0 h-full w-3/4 border-e sm:max-w-sm',
+          side === 'top' && 'inset-x-0 top-0 h-auto border-b',
+          side === 'bottom' && 'inset-x-0 bottom-0 h-auto border-t',
           className
         )}
+        variants={drawerVariants[side]}
+        transition={entranceTransition}
+        {...getMotionState(reduceMotion)}
         {...props}
       >
         {children}
@@ -73,7 +86,7 @@ function SheetContent({
           <XIcon className='size-4' />
           <span className='sr-only'>Close</span>
         </SheetPrimitive.Close>
-      </SheetPrimitive.Content>
+      </MotionSheetContent>
     </SheetPortal>
   )
 }
