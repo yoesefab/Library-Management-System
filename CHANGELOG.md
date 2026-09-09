@@ -4,6 +4,10 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Regroupement responsive des filtres de la page Rapports sur une même ligne lorsque la largeur disponible le permet.
+
+- Correction du build frontend en supprimant un import TypeScript inutilisé dans le filtre des rapports.
+
 - Simplification de l’en-tête d’import des ventes avec une action « Historique » directe et sans rappel du fuseau métier.
 
 - Ajout de 15 couvertures originales au catalogue synthétique ; leur chargement est idempotent et préserve les images produit personnalisées.

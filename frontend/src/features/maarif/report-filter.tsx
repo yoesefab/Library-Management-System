@@ -9,7 +9,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -39,7 +38,7 @@ export function ReportFilter({
         <Button
           variant='outline'
           size='sm'
-          className='h-9 w-full justify-start border-dashed bg-background'
+          className='h-9 w-full justify-start border-dashed bg-background sm:w-auto'
           disabled={disabled}
           aria-label={title}
         >
