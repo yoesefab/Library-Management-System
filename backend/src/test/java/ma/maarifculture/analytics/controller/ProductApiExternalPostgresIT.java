@@ -20,7 +20,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.test.context.support.WithMockUser;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "maarif.jwt.secret=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+        "maarif.jwt.issuer=maarif-analytics-test",
+        "maarif.jwt.audience=maarif-analytics-test-client"
+})
 @AutoConfigureMockMvc(addFilters = false)
 @Transactional
 @Rollback

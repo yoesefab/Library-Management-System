@@ -4,6 +4,32 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+### Documentation principale
+
+- Réécriture complète du README pour refléter les fonctionnalités, le JWT, les workflows local/Hostinger, les migrations, les tests et le dépannage réellement implémentés.
+
+### Authentification JWT
+
+- Remplacement des sessions serveur par des JWT HS256 courts dans un cookie HttpOnly `ACCESS_TOKEN`.
+- Validation stricte de l’algorithme, de la signature, de l’issuer, de l’audience, de l’expiration et des claims requis.
+- Rotation du JWT après modification du profil, suppression à la déconnexion ou au changement de mot de passe, et rechargement du compte actif à chaque requête.
+
+### Déploiement Hostinger VPS
+
+- Ajout de Caddy comme unique point d’entrée HTTP/HTTPS avec certificats automatiques.
+- Isolation réseau de PostgreSQL, du backend et du frontend; seuls les ports 80 et 443 sont publiés.
+- Conservation des ports de développement dans une surcharge Compose locale séparée.
+- Ajout de la rotation basique des logs Docker et du dimensionnement HikariCP configurable.
+- Correction de la version Maven Wrapper utilisée par la construction du conteneur backend.
+- Documentation des variables, migrations, sauvegardes, mises à jour et procédures de dépannage Hostinger.
+
+### Sécurité et production — 2026-09-09
+
+- Ajout de limites de débit, identifiants de requête, erreurs génériques et en-têtes de sécurité.
+- Durcissement des mots de passe, de CORS, des sessions et du profil de production.
+- Validation stricte des imports CSV, verrouillage idempotent et index de sécurité/performance.
+- Durcissement Docker Compose/Nginx et ajout du rapport d’audit complet.
+
 - Correction de la déconnexion de l’employé de stock en excluant les routes d’authentification du contrôle d’accès pendant la transition vers la page de connexion.
 
 - Restriction de l’espace « Employé de stock » aux produits en lecture seule, à l’inventaire et aux alertes ; redirection après connexion, navigation et accès direct protégés, avec contrôle complet conservé pour l’administrateur.
@@ -145,6 +171,7 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Ajout de la migration additive V2 pour les paramètres applicatifs et le contenu temporaire des aperçus d'import.
 - Comptage des lignes d'import corrigé pour distinguer lignes rejetées et erreurs multiples; rejet des lignes de commande incohérentes ou des produits dupliqués.
 - Construction de l'image backend simplifiée pour éviter la résolution hors ligne des dépendances optionnelles de plugins Maven.
+
 # Changements non publiés
 
 - Ajout de la gestion sécurisée des images produit (JPG, PNG et WebP, 5 Mo maximum), avec téléversement, remplacement, suppression et URLs API stables.

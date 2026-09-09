@@ -15,6 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class InventoryController {
     private final InventoryService service;public InventoryController(InventoryService service){this.service=service;}
     @GetMapping public PageResponse<StockResponse> inventory(@RequestParam(defaultValue="0") @Min(0) int page,@RequestParam(defaultValue="20") @Min(1) @Max(100) int size){return service.inventory(page,size);}
-    @GetMapping("/products/{productId}/movements") public PageResponse<MovementResponse> history(@PathVariable Long productId,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") @Max(100) int size){return service.history(productId,page,size);}
+    @GetMapping("/products/{productId}/movements") public PageResponse<MovementResponse> history(@PathVariable @jakarta.validation.constraints.Positive Long productId,@RequestParam(defaultValue="0") @Min(0) int page,@RequestParam(defaultValue="20") @Min(1) @Max(100) int size){return service.history(productId,page,size);}
     @PostMapping("/movements") @ResponseStatus(HttpStatus.CREATED) public MovementResponse record(@Valid @RequestBody MovementRequest request){return service.record(request);}
 }

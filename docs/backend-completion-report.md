@@ -30,7 +30,7 @@
 
 ## Limites connues
 
-- Sessions en mémoire adaptées à une instance; Spring Session JDBC est requis pour plusieurs réplicas.
+- JWT stateless court dans un cookie HttpOnly; aucune session serveur ni Redis n’est requis.
 - Limitation de débit du login et tests de concurrence à renforcer avant exposition Internet.
 - WooCommerce reste volontairement non implémenté et aucune connexion production n'a été effectuée.
 - Les anciens rapports de jalons mentionnant React décrivent un état historique supprimé du produit courant.

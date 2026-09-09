@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
+import jakarta.servlet.http.Cookie;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -59,15 +59,15 @@ class BackendEndToEndApiTest {
 
     @Test
     void executesTheCompleteSyntheticDemonstrationThroughHttp() throws Exception {
-        MockHttpSession session = login();
+        Cookie accessToken = login();
 
-        mockMvc.perform(post("/api/admin/demo-data/catalog").session(session).with(csrf()))
+        mockMvc.perform(post("/api/admin/demo-data/catalog").cookie(accessToken).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.synthetic").value(true))
                 .andExpect(jsonPath("$.productsCreated").value(15))
                 .andExpect(jsonPath("$.initialMovementsCreated").value(15));
 
-        mockMvc.perform(post("/api/admin/demo-data/catalog").session(session).with(csrf()))
+        mockMvc.perform(post("/api/admin/demo-data/catalog").cookie(accessToken).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productsCreated").value(0))
                 .andExpect(jsonPath("$.productsAlreadyPresent").value(15))
@@ -81,7 +81,7 @@ class BackendEndToEndApiTest {
         JsonNode invalidPreview = preview(session, "sales-invalid.csv");
         assertThat(invalidPreview.path("status").asText()).isEqualTo("PARTIAL");
         assertThat(invalidPreview.path("failedRows").asInt()).isGreaterThanOrEqualTo(8);
-        mockMvc.perform(get("/api/imports/{id}/errors.csv", invalidPreview.path("id").asLong()).session(session))
+        mockMvc.perform(get("/api/imports/{id}/errors.csv", invalidPreview.path("id").asLong()).cookie(accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("UNKNOWN_SKU")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("INCONSISTENT_ORDER")))
@@ -93,14 +93,14 @@ class BackendEndToEndApiTest {
         assertThat(validPreview.path("totalRows").asInt()).isEqualTo(280);
         assertThat(validPreview.path("failedRows").asInt()).isZero();
 
-        mockMvc.perform(post("/api/imports/{id}/confirm", importId).session(session).with(csrf()))
+        mockMvc.perform(post("/api/imports/{id}/confirm", importId).cookie(accessToken).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("COMPLETED"))
                 .andExpect(jsonPath("$.successfulRows").value(280));
 
         assertThat(currentStock(session, "LIV-AR-004")).isZero();
 
-        mockMvc.perform(post("/api/imports/{id}/confirm", importId).session(session).with(csrf()))
+        mockMvc.perform(post("/api/imports/{id}/confirm", importId).cookie(accessToken).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("COMPLETED"));
         assertThat(currentStock(session, "LIV-AR-004")).isZero();
@@ -111,7 +111,7 @@ class BackendEndToEndApiTest {
         MvcResult dashboard = mockMvc.perform(get("/api/dashboard")
                         .param("start", "2025-09-01T00:00:00Z")
                         .param("end", "2026-08-27T23:59:59Z")
-                        .session(session))
+                        .cookie(accessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfOrders").value(52))
                 .andExpect(jsonPath("$.unitsSold").value(585))
@@ -122,43 +122,43 @@ class BackendEndToEndApiTest {
         assertThat(metricTotal(dashboardJson, "salesByCategory")).isEqualByComparingTo("585");
         assertThat(metricTotal(dashboardJson, "salesByLanguage")).isEqualByComparingTo("585");
 
-        mockMvc.perform(post("/api/alerts/refresh").session(session).with(csrf()))
+        mockMvc.perform(post("/api/alerts/refresh").cookie(accessToken).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.created", greaterThan(0)));
         mockMvc.perform(get("/api/alerts")
                         .param("status", "OPEN")
                         .param("type", "OUT_OF_STOCK")
-                        .session(session))
+                        .cookie(accessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].sku").value("LIV-AR-004"));
 
         mockMvc.perform(post("/api/forecasting/products/{id}/generate", bestsellerId)
-                        .session(session)
+                        .cookie(accessToken)
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.method", not("FALLBACK")))
                 .andExpect(jsonPath("$.accuracyMetric").value("MAE"));
         mockMvc.perform(post("/api/forecasting/products/{id}/generate", insufficientHistoryId)
-                        .session(session)
+                        .cookie(accessToken)
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.method").value("FALLBACK"));
         mockMvc.perform(post("/api/forecasting/products/{id}/recommend", outOfStockId)
-                        .session(session)
+                        .cookie(accessToken)
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentStock").value(0))
                 .andExpect(jsonPath("$.recommendedQuantity", greaterThan(0)))
                 .andExpect(jsonPath("$.explanation", org.hamcrest.Matchers.containsString("Aucune commande fournisseur")));
 
-        mockMvc.perform(get("/api/reports/inventory.csv").session(session))
+        mockMvc.perform(get("/api/reports/inventory.csv").cookie(accessToken))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition", "attachment; filename=inventory.csv"))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("LIV-AR-004")));
         MvcResult pdf = mockMvc.perform(get("/api/reports/management.pdf")
                         .param("start", "2025-09-01T00:00:00Z")
                         .param("end", "2026-08-27T23:59:59Z")
-                        .session(session))
+                        .cookie(accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_PDF))
                 .andReturn();
@@ -166,20 +166,20 @@ class BackendEndToEndApiTest {
                 .isEqualTo("%PDF");
     }
 
-    private MockHttpSession login() throws Exception {
-        return (MockHttpSession) mockMvc.perform(post("/api/auth/login")
+    private Cookie login() throws Exception {
+        Cookie cookie = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"email":"%s","password":"%s"}
                                 """.formatted(ADMIN_EMAIL, ADMIN_PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.role").value("ADMINISTRATOR"))
-                .andReturn()
-                .getRequest()
-                .getSession(false);
+                .andReturn().getResponse().getCookie("ACCESS_TOKEN");
+        assertThat(cookie).isNotNull();
+        return cookie;
     }
 
-    private JsonNode preview(MockHttpSession session, String fileName) throws Exception {
+    private JsonNode preview(Cookie accessToken, String fileName) throws Exception {
         MockMultipartFile file = new MockMultipartFile(
                 "file",
                 fileName,
@@ -187,18 +187,18 @@ class BackendEndToEndApiTest {
                 Files.readAllBytes(sampleFile(fileName)));
         MvcResult result = mockMvc.perform(multipart("/api/imports/sales/preview")
                         .file(file)
-                        .session(session)
+                        .cookie(accessToken)
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn();
         return objectMapper.readTree(result.getResponse().getContentAsByteArray());
     }
 
-    private long productId(MockHttpSession session, String sku) throws Exception {
+    private long productId(Cookie accessToken, String sku) throws Exception {
         MvcResult result = mockMvc.perform(get("/api/products")
                         .param("query", sku)
                         .param("size", "100")
-                        .session(session))
+                        .cookie(accessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andReturn();
@@ -206,10 +206,10 @@ class BackendEndToEndApiTest {
                 .path("content").path(0).path("id").asLong();
     }
 
-    private int currentStock(MockHttpSession session, String sku) throws Exception {
+    private int currentStock(Cookie accessToken, String sku) throws Exception {
         MvcResult result = mockMvc.perform(get("/api/inventory")
                         .param("size", "100")
-                        .session(session))
+                        .cookie(accessToken))
                 .andExpect(status().isOk())
                 .andReturn();
         for (JsonNode row : objectMapper.readTree(result.getResponse().getContentAsByteArray()).path("content")) {

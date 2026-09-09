@@ -46,7 +46,16 @@ const schema = z.object({
   password: z
     .string()
     .max(128, '128 caractères maximum.')
-    .refine((value) => !value || value.length >= 12, '12 caractères minimum.'),
+    .refine((value) => !value || value.length >= 12, '12 caractères minimum.')
+    .refine(
+      (value) => !value || /[a-z]/.test(value),
+      'Une minuscule est requise.'
+    )
+    .refine(
+      (value) => !value || /[A-Z]/.test(value),
+      'Une majuscule est requise.'
+    )
+    .refine((value) => !value || /\d/.test(value), 'Un chiffre est requis.'),
   role: z.enum(['ADMINISTRATOR', 'MANAGER', 'STOCK_EMPLOYEE']),
   active: z.boolean(),
 })
