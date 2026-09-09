@@ -83,7 +83,7 @@
 
 ## ADR-012 — Session serveur Spring Security
 
-**Statut:** accepté, 2026-08-27.  
+**Statut:** remplacé par ADR-014, 2026-09-09.
 **Décision:** authentification BCrypt avec session courte, cookie `HttpOnly`/`SameSite=Strict` et jeton CSRF en cookie lisible par un client HTTP.  
 **Motif:** révocation à la déconnexion et absence de jeton persistant dans un stockage navigateur. En HTTPS, `SESSION_COOKIE_SECURE=true` est obligatoire.
 
@@ -92,6 +92,12 @@
 **Statut:** accepté, 2026-08-27.  
 **Décision:** versionner un catalogue et une année de ventes entièrement synthétiques; exposer un chargeur idempotent uniquement avec `DEMO_DATA_ENABLED=true` et le rôle administrateur.  
 **Motif:** rendre la soutenance reproductible sans dépendre des données ou API de l'entreprise, tout en empêchant le chargement accidentel en production. Le CSV annuel reste importé par le parcours normal afin de prouver validation, checksum, transactions et mouvements de stock.
+
+## ADR-014 — JWT stateless en cookie HttpOnly
+
+**Statut:** accepté, 2026-09-09.
+**Décision:** remplacer la session serveur par un JWT HS256 de courte durée dans le cookie `ACCESS_TOKEN` HttpOnly, `SameSite=Strict` et `Secure` en production. Conserver CSRF pour les mutations, car le navigateur joint automatiquement le cookie.
+**Motif:** répondre au besoin explicite de JWT sans exposer le token à JavaScript. La clé symétrique Base64 d’au moins 256 bits reste externe au dépôt; issuer, audience, expiration et claims requis sont validés. Le compte et ses rôles sont rechargés depuis PostgreSQL à chaque requête afin qu’une désactivation soit immédiate.
 
 ## Questions différées et réversibles
 

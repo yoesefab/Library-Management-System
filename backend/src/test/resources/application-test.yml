@@ -12,5 +12,9 @@ spring:
     clean-disabled: true
 
 maarif:
+  jwt:
+    secret: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+    issuer: maarif-analytics-test
+    audience: maarif-analytics-test-client
   images:
     directory: ${java.io.tmpdir}/maarif-analytics-tests/${random.uuid}

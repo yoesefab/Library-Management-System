@@ -1,0 +1,22 @@
+services:
+  db:
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      JWT_COOKIE_SECURE: "false"
+      CORS_ALLOWED_ORIGINS: http://localhost:${FRONTEND_PORT:-5173}
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8080}:8080"
+
+  frontend:
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-5173}:80"
+
+  caddy:
+    profiles: [production]
+    environment:
+      APP_DOMAIN: localhost
+      ACME_EMAIL: local@example.test
