@@ -6,6 +6,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
+import { canAccessPath, getDefaultPath } from '@/lib/access-control'
 import { cn } from '@/lib/utils'
 import { useSession } from '@/context/session-provider'
 import { Button } from '@/components/ui/button'
@@ -64,7 +65,12 @@ export function UserAuthForm({
         exp: 0,
       })
       auth.setAccessToken('server-session')
-      await navigate({ to: redirectTo || '/', replace: true })
+      const defaultPath = getDefaultPath(user.role)
+      const destination =
+        redirectTo && canAccessPath(user.role, redirectTo)
+          ? redirectTo
+          : defaultPath
+      await navigate({ to: destination, replace: true })
       toast.success(`Bienvenue, ${data.email}`)
     } catch (error) {
       toast.error(

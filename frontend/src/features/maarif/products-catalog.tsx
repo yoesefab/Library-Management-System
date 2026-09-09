@@ -194,9 +194,12 @@ export function ProductCatalog({
               <DataTableColumnHeader
                 column={column}
                 title={columnLabels[key]}
+                className={
+                  key === 'language' ? 'w-full justify-center' : undefined
+                }
               />
             ),
-            meta: { className: '' },
+            meta: { className: key === 'language' ? 'text-center' : '' },
             filterFn: (row, id, value: string[]) =>
               value.includes(row.getValue(id)),
           }) satisfies ColumnDef<Product>
@@ -209,9 +212,10 @@ export function ProductCatalog({
               <DataTableColumnHeader
                 column={column}
                 title={columnLabels[key]}
+                className='w-full justify-center'
               />
             ),
-            meta: { className: '' },
+            meta: { className: 'text-center' },
             cell: ({ row }) => (
               <span
                 className={cn(
@@ -232,9 +236,13 @@ export function ProductCatalog({
         id: 'active',
         accessorFn: (product) => (product.active ? 'active' : 'disabled'),
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title='Statut' />
+          <DataTableColumnHeader
+            column={column}
+            title='Statut'
+            className='w-full justify-center'
+          />
         ),
-        meta: { className: '' },
+        meta: { className: 'text-center' },
         cell: ({ row }) => (
           <StatusBadge status={row.original.active ? 'Actif' : 'Désactivé'}>
             {row.original.active ? (

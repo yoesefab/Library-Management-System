@@ -19,11 +19,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import {
-  getMotionState,
-  staggerContainerVariants,
-  staggerItemVariants,
-} from '@/lib/motion'
+import { dashboardItemVariants, getMotionState } from '@/lib/motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const KPI_DATA = [
@@ -142,6 +138,19 @@ function KpiCard({ item }) {
         </p>
       </CardContent>
     </Card>
+  )
+}
+
+function DashboardItem({ children, className, index, reduceMotion }) {
+  return (
+    <motion.div
+      className={className}
+      custom={reduceMotion ? 0 : index * 0.045}
+      variants={dashboardItemVariants}
+      {...getMotionState(reduceMotion)}
+    >
+      {children}
+    </motion.div>
   )
 }
 
@@ -327,65 +336,91 @@ export function DashboardContent(props) {
   const languageData = distribution(dashboard?.salesByLanguage, LANGUAGE_DATA)
   return (
     <div className='space-y-4'>
-      <motion.section
+      <section
         aria-label='Indicateurs clés'
         className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6'
-        variants={staggerContainerVariants}
-        {...getMotionState(reduceMotion)}
       >
-        {kpis.map((item) => (
-          <motion.div key={item.label} variants={staggerItemVariants}>
+        {kpis.map((item, index) => (
+          <DashboardItem
+            index={index}
+            key={item.label}
+            reduceMotion={reduceMotion}
+          >
             <KpiCard item={item} />
-          </motion.div>
+          </DashboardItem>
         ))}
-      </motion.section>
+      </section>
 
       <section
         aria-label='Tendances'
         className='grid grid-cols-1 gap-4 lg:grid-cols-2'
       >
-        <Card className='min-w-0 gap-4 py-4'>
-          <CardHeader className='px-4'>
-            <CardTitle className='text-sm'>
-              Évolution du chiffre d’affaires (MAD)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='ps-2 pe-4'>
-            <TrendChart
-              data={trend}
-              dataKey='revenue'
-              label='Chiffre d’affaires'
-              tickFormatter={(value) => `${value}k`}
-            />
-          </CardContent>
-        </Card>
-        <Card className='min-w-0 gap-4 py-4'>
-          <CardHeader className='px-4'>
-            <CardTitle className='text-sm'>Évolution des commandes</CardTitle>
-          </CardHeader>
-          <CardContent className='ps-2 pe-4'>
-            <TrendChart
-              data={trend}
-              dataKey='orders'
-              label='Commandes'
-              tickFormatter={(value) => value}
-            />
-          </CardContent>
-        </Card>
+        <DashboardItem
+          className='min-w-0'
+          index={6}
+          reduceMotion={reduceMotion}
+        >
+          <Card className='h-full min-w-0 gap-4 py-4'>
+            <CardHeader className='px-4'>
+              <CardTitle className='text-sm'>
+                Évolution du chiffre d’affaires (MAD)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='ps-2 pe-4'>
+              <TrendChart
+                data={trend}
+                dataKey='revenue'
+                label='Chiffre d’affaires'
+                tickFormatter={(value) => `${value}k`}
+              />
+            </CardContent>
+          </Card>
+        </DashboardItem>
+        <DashboardItem
+          className='min-w-0'
+          index={7}
+          reduceMotion={reduceMotion}
+        >
+          <Card className='h-full min-w-0 gap-4 py-4'>
+            <CardHeader className='px-4'>
+              <CardTitle className='text-sm'>Évolution des commandes</CardTitle>
+            </CardHeader>
+            <CardContent className='ps-2 pe-4'>
+              <TrendChart
+                data={trend}
+                dataKey='orders'
+                label='Commandes'
+                tickFormatter={(value) => value}
+              />
+            </CardContent>
+          </Card>
+        </DashboardItem>
       </section>
 
       <section
         aria-label='Répartition des ventes'
         className='grid grid-cols-1 gap-4 lg:grid-cols-2'
       >
-        <DistributionPanel
-          data={categoryData}
-          title='Ventes par catégorie (exemplaires)'
-        />
-        <DistributionPanel
-          data={languageData}
-          title='Ventes par langue (exemplaires)'
-        />
+        <DashboardItem
+          className='min-w-0'
+          index={8}
+          reduceMotion={reduceMotion}
+        >
+          <DistributionPanel
+            data={categoryData}
+            title='Ventes par catégorie (exemplaires)'
+          />
+        </DashboardItem>
+        <DashboardItem
+          className='min-w-0'
+          index={9}
+          reduceMotion={reduceMotion}
+        >
+          <DistributionPanel
+            data={languageData}
+            title='Ventes par langue (exemplaires)'
+          />
+        </DashboardItem>
       </section>
     </div>
   )

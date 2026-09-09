@@ -51,6 +51,21 @@ class SecurityAuthorizationTest {
         mockMvc.perform(get("/api/auth/me").session(session)).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("stock@test.local"));
         mockMvc.perform(get("/api/dashboard").param("start","2026-01-01T00:00:00Z").param("end","2026-12-31T23:59:59Z").session(session))
                 .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/products").session(session)).andExpect(status().isOk());
+        mockMvc.perform(get("/api/inventory").session(session)).andExpect(status().isOk());
+        mockMvc.perform(get("/api/alerts").session(session)).andExpect(status().isOk());
+        mockMvc.perform(post("/api/products").with(csrf()).session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"sku":"SECURITY-TEST","isbn":"","title":"Test synthétique","description":"","language":"fr","sellingPrice":10.00,"purchaseCost":null,"minimumStockThreshold":0,"supplierLeadTimeDays":null,"categoryId":null,"publisherId":null,"supplierId":null,"authorIds":[]}
+                                """))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/orders").session(session)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/imports").session(session)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/forecasting/recommendations").session(session)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/reports/inventory.csv").session(session)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/admin/settings").session(session)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/admin/users").session(session)).andExpect(status().isForbidden());
         mockMvc.perform(post("/api/admin/demo-data/catalog").with(csrf()).session(session))
                 .andExpect(status().isForbidden());
         mockMvc.perform(post("/api/auth/logout").with(csrf()).session(session)).andExpect(status().isNoContent());

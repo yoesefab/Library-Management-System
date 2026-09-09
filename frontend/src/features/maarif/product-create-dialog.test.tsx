@@ -99,4 +99,42 @@ describe('ProductCreateDialog', () => {
       .element(screen.getByRole('textbox', { name: 'Titre', exact: true }))
       .toHaveValue('Livre de test')
   })
+
+  it('keeps the form open and displays a backend error', async () => {
+    const onClose = vi.fn()
+    const onCreate = vi.fn().mockRejectedValue(new Error('Backend unavailable'))
+    const screen = await render(
+      <ProductCreateDialog onClose={onClose} onCreate={onCreate} />
+    )
+    await userEvent.fill(
+      screen.getByRole('textbox', { name: 'SKU', exact: true }),
+      'LIV-999999'
+    )
+    await userEvent.fill(
+      screen.getByRole('textbox', { name: 'Titre', exact: true }),
+      'Produit de test'
+    )
+    await userEvent.fill(
+      screen.getByRole('textbox', { name: 'Auteurs', exact: true }),
+      'Auteur de test'
+    )
+    await userEvent.fill(
+      screen.getByRole('textbox', { name: 'Prix de vente (MAD)' }),
+      '120'
+    )
+    await userEvent.fill(
+      screen.getByRole('textbox', { name: 'Coût d’achat (MAD)' }),
+      '80'
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Enregistrer', exact: true })
+    )
+
+    await expect
+      .element(
+        screen.getByText('Impossible d’enregistrer le produit. Réessayez.')
+      )
+      .toBeVisible()
+    expect(onClose).not.toHaveBeenCalled()
+  })
 })

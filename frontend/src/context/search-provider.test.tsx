@@ -1,3 +1,4 @@
+import type { UserRole } from '@/types/api'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, type RenderResult } from 'vitest-browser-react'
 import { userEvent } from 'vitest/browser'
@@ -24,8 +25,8 @@ vi.mock('@/context/theme-provider', () => ({
 
 type ShortcutModifier = 'Control' | 'Meta'
 
-async function renderWithSearchProvider() {
-  return await render(<SearchProvider>{null}</SearchProvider>)
+async function renderWithSearchProvider(role?: UserRole) {
+  return await render(<SearchProvider role={role}>{null}</SearchProvider>)
 }
 
 /**
@@ -128,6 +129,26 @@ describe('SearchProvider and CommandMenu', () => {
     expect(mocks.navigate).toHaveBeenCalledWith({ to: '/administration' })
     await expect
       .element(getByPlaceholder(COMMAND_MENU_PLACEHOLDER))
+      .not.toBeInTheDocument()
+  })
+
+  it('hides administrator-only commands from a stock employee', async () => {
+    const screen = await renderWithSearchProvider('STOCK_EMPLOYEE')
+
+    await openCommandPalette(screen)
+
+    await expect.element(screen.getByText('Produits')).toBeInTheDocument()
+    await expect.element(screen.getByText('Inventaire')).toBeInTheDocument()
+    await expect
+      .element(screen.getByText('Alertes de stock'))
+      .toBeInTheDocument()
+    await expect
+      .element(screen.getByText('Tableau de bord'))
+      .not.toBeInTheDocument()
+    await expect.element(screen.getByText('Commandes')).not.toBeInTheDocument()
+    await expect.element(screen.getByText('Settings')).not.toBeInTheDocument()
+    await expect
+      .element(screen.getByText('Utilisateurs'))
       .not.toBeInTheDocument()
   })
 

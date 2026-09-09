@@ -1,7 +1,10 @@
 import { Navigate, Outlet, useLocation } from '@tanstack/react-router'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import {
+  canAccessPath,
+  getDefaultPath,
+  isAuthenticationPath,
+} from '@/lib/access-control'
 import { getCookie } from '@/lib/cookies'
-import { entranceTransition, getMotionState, pageVariants } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 import { LayoutProvider } from '@/context/layout-provider'
 import { SearchProvider } from '@/context/search-provider'
@@ -17,23 +20,22 @@ type AuthenticatedLayoutProps = {
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   const session = useSession()
   const location = useLocation()
-  const reduceMotion = useReducedMotion()
-  const motionState = getMotionState(reduceMotion)
   if (session.loading) return null
+  if (isAuthenticationPath(location.pathname)) return null
   if (!session.user) {
-    if (
-      ['/sign-in', '/sign-in-2', '/sign-up', '/forgot-password', '/otp'].some(
-        (path) => location.pathname.startsWith(path)
-      )
-    )
-      return null
     return (
       <Navigate to='/sign-in' search={{ redirect: location.href }} replace />
     )
   }
+  const defaultPath = getDefaultPath(session.user.role)
+  if (location.pathname === '/' && defaultPath !== '/')
+    return <Navigate to={defaultPath} replace />
+  if (!canAccessPath(session.user.role, location.pathname))
+    return <Navigate to='/unauthorized' replace />
+
   const defaultOpen = getCookie('sidebar_state') !== 'false'
   return (
-    <SearchProvider>
+    <SearchProvider role={session.user.role}>
       <LayoutProvider>
         <SidebarProvider defaultOpen={defaultOpen}>
           <SkipToMain />
@@ -52,17 +54,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
               'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
             )}
           >
-            <AnimatePresence initial={false} mode='wait'>
-              <motion.div
-                key={location.pathname}
-                className='flex min-h-0 flex-1 flex-col'
-                variants={pageVariants}
-                transition={entranceTransition}
-                {...motionState}
-              >
-                {children ?? <Outlet />}
-              </motion.div>
-            </AnimatePresence>
+            {children ?? <Outlet />}
           </SidebarInset>
         </SidebarProvider>
       </LayoutProvider>

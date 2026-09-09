@@ -4,6 +4,8 @@ import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CATALOG_PRODUCTS } from '@/maarif-legacy/shared/catalogData'
 import { toast } from 'sonner'
+import { ApiError } from '@/api/client'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,6 +46,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { ProductImageUpload, type ProductImageChange } from './product-image'
 
 const amount = (value: string) => Number(value.replace(',', '.'))
+const submitErrorMessage = (error: unknown) =>
+  error instanceof ApiError
+    ? (error.violations[0]?.message ?? error.message)
+    : 'Impossible d’enregistrer le produit. Réessayez.'
+
 const productSchema = (currentSku?: string) =>
   z
     .object({
@@ -228,6 +235,7 @@ export function ProductCreateDialog({
   const isEdit = Boolean(product)
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const [image, setImage] = useState<ProductImageChange>(undefined)
+  const [submitError, setSubmitError] = useState('')
   const form = useForm<ProductForm>({
     resolver: zodResolver(productSchema(product?.sku)),
     defaultValues: productFormValues(product),
@@ -246,14 +254,19 @@ export function ProductCreateDialog({
   }, [dirty])
   const requestClose = () => (dirty ? setConfirmDiscard(true) : onClose())
   const onSubmit = async (values: ProductForm) => {
-    await onCreate?.(values, image)
-    form.reset()
-    toast.success(isEdit ? 'Produit mis à jour' : 'Produit validé', {
-      description: isEdit
-        ? 'Les modifications ont été enregistrées.'
-        : 'Le produit a été enregistré.',
-    })
-    onClose()
+    setSubmitError('')
+    try {
+      await onCreate?.(values, image)
+      form.reset()
+      toast.success(isEdit ? 'Produit mis à jour' : 'Produit validé', {
+        description: isEdit
+          ? 'Les modifications ont été enregistrées.'
+          : 'Le produit a été enregistré.',
+      })
+      onClose()
+    } catch (error) {
+      setSubmitError(submitErrorMessage(error))
+    }
   }
   return (
     <>
@@ -366,12 +379,26 @@ export function ProductCreateDialog({
               </form>
             </Form>
           </div>
+          {submitError && (
+            <Alert variant='destructive'>
+              <AlertDescription>{submitError}</AlertDescription>
+            </Alert>
+          )}
           <DialogFooter>
-            <Button variant='outline' onClick={requestClose}>
+            <Button
+              type='button'
+              variant='outline'
+              disabled={form.formState.isSubmitting}
+              onClick={requestClose}
+            >
               Annuler
             </Button>
-            <Button type='submit' form='product-form'>
-              Enregistrer
+            <Button
+              type='submit'
+              form='product-form'
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? 'Enregistrement…' : 'Enregistrer'}
             </Button>
           </DialogFooter>
         </DialogContent>

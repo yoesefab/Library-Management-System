@@ -1,3 +1,4 @@
+import { canAccessPath } from '@/lib/access-control'
 import { useLayout } from '@/context/layout-provider'
 import { useSession } from '@/context/session-provider'
 import {
@@ -49,9 +50,10 @@ export function AppSidebar() {
           .map((group) => ({
             ...group,
             items: group.items.filter(
-              (item) => item.url !== '/users' || user?.role === 'ADMINISTRATOR'
+              (item) => !user || !item.url || canAccessPath(user.role, item.url)
             ),
           }))
+          .filter((group) => group.items.length > 0)
           .map((props) => (
             <NavGroup key={props.title} {...props} />
           ))}

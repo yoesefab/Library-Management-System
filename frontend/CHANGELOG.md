@@ -1,6 +1,18 @@
 ## Non publié
 
-- Ajout d’un système de mouvement partagé avec retours de survol, focus et pression, transitions de routes et entrées de dialogues, désactivé lorsque l’utilisateur préfère réduire les animations.
+- Correction de la redirection de déconnexion de l’employé de stock, qui était interceptée à tort par le garde des routes protégées.
+
+- Mise en place d’une politique d’accès partagée : l’employé de stock arrive sur l’inventaire et ne voit que Produits, Inventaire et Alertes, tandis que les écrans d’administration et les actions de modification produit restent réservés aux rôles autorisés.
+
+- Rétablissement des formulaires de création et de modification : les dialogues et tiroirs utilisent directement les portails Radix et s’animent individuellement à l’ouverture et à la fermeture.
+
+- Fiabilisation du formulaire produit : erreur backend visible, conservation des saisies en cas d’échec et verrouillage pendant l’enregistrement.
+
+- Centrage des en-têtes et des valeurs Langue, Prix, Stock et Statut du catalogue produits.
+
+- Restauration du layout authentifié sans wrapper animé global ; le tableau de bord anime désormais individuellement ses six indicateurs, ses deux graphiques et ses deux panneaux de répartition.
+
+- Ajout d’un système de mouvement partagé avec retours de survol, focus et pression, animations locales des composants et prise en charge de la réduction des mouvements.
 
 ## Connexion au backend (2026-09-05)
 

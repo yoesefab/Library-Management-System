@@ -4,7 +4,21 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
-- Ajout d’animations Framer Motion discrètes et respectueuses de la réduction des mouvements pour les transitions de pages, les boutons et les dialogues du frontend.
+- Correction de la déconnexion de l’employé de stock en excluant les routes d’authentification du contrôle d’accès pendant la transition vers la page de connexion.
+
+- Restriction de l’espace « Employé de stock » aux produits en lecture seule, à l’inventaire et aux alertes ; redirection après connexion, navigation et accès direct protégés, avec contrôle complet conservé pour l’administrateur.
+
+- Rétablissement de l’affichage des formulaires de création et de modification en conservant les primitives Radix natives pour les dialogues et tiroirs, avec une animation propre à chaque composant.
+
+- Affichage des erreurs backend et prévention des doubles soumissions dans le formulaire de création ou modification d’un produit.
+
+- Centrage des en-têtes et des valeurs Langue, Prix, Stock et Statut du catalogue produits.
+
+- Restauration de la mise en page du tableau de bord en supprimant l’animation globale des routes et en animant séparément ses indicateurs, graphiques et répartitions.
+
+- Suppression de la composition fragile entre Radix UI et Framer Motion pour rétablir le build Docker et le rendu des panneaux du frontend.
+
+- Ajout d’animations discrètes et respectueuses de la réduction des mouvements pour les boutons, dialogues, tiroirs, menus et composants du tableau de bord.
 
 - Regroupement responsive des filtres de la page Rapports sur une même ligne lorsque la largeur disponible le permet.
 
