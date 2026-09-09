@@ -2,8 +2,18 @@
 
 import * as React from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { motion, useReducedMotion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
+import {
+  dialogVariants,
+  entranceTransition,
+  getMotionState,
+  overlayVariants,
+} from '@/lib/motion'
 import { cn } from '@/lib/utils'
+
+const MotionDialogOverlay = motion.create(DialogPrimitive.Overlay)
+const MotionDialogContent = motion.create(DialogPrimitive.Content)
 
 function Dialog({
   ...props
@@ -33,13 +43,14 @@ function DialogOverlay({
   className,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+  const reduceMotion = useReducedMotion()
   return (
-    <DialogPrimitive.Overlay
+    <MotionDialogOverlay
       data-slot='dialog-overlay'
-      className={cn(
-        'fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
-        className
-      )}
+      className={cn('fixed inset-0 z-50 bg-black/50', className)}
+      variants={overlayVariants}
+      transition={entranceTransition}
+      {...getMotionState(reduceMotion)}
       {...props}
     />
   )
@@ -53,15 +64,19 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
 }) {
+  const reduceMotion = useReducedMotion()
   return (
     <DialogPortal data-slot='dialog-portal'>
       <DialogOverlay />
-      <DialogPrimitive.Content
+      <MotionDialogContent
         data-slot='dialog-content'
         className={cn(
-          'fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg',
+          'fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg sm:max-w-lg',
           className
         )}
+        variants={dialogVariants}
+        transition={entranceTransition}
+        {...getMotionState(reduceMotion)}
         {...props}
       >
         {children}
@@ -74,7 +89,7 @@ function DialogContent({
             <span className='sr-only'>Close</span>
           </DialogPrimitive.Close>
         )}
-      </DialogPrimitive.Content>
+      </MotionDialogContent>
     </DialogPortal>
   )
 }

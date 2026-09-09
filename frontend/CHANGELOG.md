@@ -1,3 +1,7 @@
+## Non publié
+
+- Ajout d’un système de mouvement partagé avec retours de survol, focus et pression, transitions de routes et entrées de dialogues, désactivé lorsque l’utilisateur préfère réduire les animations.
+
 ## Connexion au backend (2026-09-05)
 
 - Remplacement du bouton d’accès à l’historique des imports par un badge-lien shadcn avec une icône de lien externe.
