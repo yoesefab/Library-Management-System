@@ -83,7 +83,7 @@ export async function loadProducts(signal?: AbortSignal) {
   )
 }
 
-export function mapProduct(
+function mapProduct(
   detail: ProductDetail,
   stock?: StockItem
 ): Product & Record<string, unknown> {
@@ -192,7 +192,7 @@ export async function loadOrders(signal?: AbortSignal) {
   return detailed.map(mapOrder)
 }
 
-export function mapOrder(order: SalesOrder) {
+function mapOrder(order: SalesOrder) {
   return {
     backendId: order.id,
     reference: order.externalReference || `CMD-${order.id}`,

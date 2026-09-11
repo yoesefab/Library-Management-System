@@ -8,6 +8,7 @@ Le dépôt contient une API Spring Boot, un client React et une base PostgreSQL.
 
 ## Sommaire
 
+- [État du projet](#état-du-projet)
 - [Fonctionnalités](#fonctionnalités)
 - [Architecture et technologies](#architecture-et-technologies)
 - [Sécurité](#sécurité)
@@ -19,6 +20,19 @@ Le dépôt contient une API Spring Boot, un client React et une base PostgreSQL.
 - [Tests et vérifications](#tests-et-vérifications)
 - [Dépannage rapide](#dépannage-rapide)
 - [Documentation](#documentation)
+- [Contribution](#contribution)
+
+## État du projet
+
+Le projet constitue une démonstration complète, exécutable localement ou sur un VPS mono-instance. Les parcours métier documentés sont implémentés; les données fournies sont synthétiques et l'intégration au système réel reste volontairement hors périmètre.
+
+| Élément | État |
+| --- | --- |
+| API, sécurité et persistance | Implémentés et couverts par les tests backend |
+| Interface métier responsive | Implémentée pour les trois rôles |
+| Données de démonstration | Incluses, fictives et rechargeables de façon idempotente |
+| Déploiement | Docker Compose avec HTTPS Caddy documenté |
+| Production Maarif Culture | Non connectée et non autorisée par défaut |
 
 ## Fonctionnalités
 
@@ -414,3 +428,7 @@ Cette commande détruit toutes les données locales. Ne jamais l’utiliser sur 
 | [Journal de décisions](docs/decision-log.md)              | décisions d’architecture              |
 
 Les changements livrés sont consignés dans [`CHANGELOG.md`](CHANGELOG.md).
+
+## Contribution
+
+Les propositions sont bienvenues. Lisez [`CONTRIBUTING.md`](CONTRIBUTING.md) pour installer l'environnement, respecter les règles d'architecture et exécuter les vérifications attendues. Les mentions et licences des composants réutilisés par le client sont conservées dans [`frontend/LICENSE`](frontend/LICENSE) et [`frontend/THIRD_PARTY_NOTICES.md`](frontend/THIRD_PARTY_NOTICES.md).

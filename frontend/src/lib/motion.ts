@@ -5,7 +5,7 @@ export const feedbackTransition: Transition = {
   ease: 'easeOut',
 }
 
-export const entranceTransition: Transition = {
+const entranceTransition: Transition = {
   duration: 0.32,
   ease: [0.22, 1, 0.36, 1],
 }
