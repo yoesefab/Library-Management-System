@@ -4,6 +4,22 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+- Génération et intégration de trois diagrammes de cas d’utilisation par profil et d’un diagramme de séquence d’authentification conforme à la session HTTP Spring Security du projet.
+
+- Développement modéré du rapport avec des compléments académiques sur le contexte, la démarche, le positionnement, la faisabilité, l’architecture, les données, les interfaces et l’interprétation des tests, sans ajouter de fonctionnalité au projet.
+
+- Réorganisation des chapitres 2 et 3 du rapport : positionnement, acteurs, besoins, cas d’utilisation, faisabilité et risques sont regroupés dans l’analyse ; architecture, technologies, UML et base de données sont regroupés dans la conception. Les sections étrangères au niveau de détail attendu ont été retirées.
+
+- Mise en forme de l’introduction générale avec des sous-titres distincts pour le contexte du projet, la problématique, les objectifs et l’organisation du rapport.
+
+- Réorganisation de la modélisation UML du rapport selon le modèle éditorial fourni : présentation synthétique d’UML, vues par acteur, fiches et scénarios de cas d’utilisation, diagramme de classes, diagrammes de séquence et diagramme d’activité. Ajout d’emplacements réservés clairement identifiés pour les illustrations à compléter ultérieurement.
+
+- Ajout au rapport PFE de trois diagrammes UML fondés sur l’implémentation : cas d’utilisation par rôle, séquence de validation et confirmation d’un import CSV, et classes métier avec cardinalités.
+
+- Suppression du terme « officiel » dans les légendes des figures présentant les logos technologiques du rapport PFE.
+
+- Enrichissement de la section « Choix technologiques » du rapport PFE : une présentation verticale distincte, un titre, un bref texte et une figure issue du logo officiel pour chaque technologie ; ajout de la traçabilité des images, recompilation et contrôle visuel du PDF.
+
 - Correction de la déconnexion de l’employé de stock en excluant les routes d’authentification du contrôle d’accès pendant la transition vers la page de connexion.
 
 - Restriction de l’espace « Employé de stock » aux produits en lecture seule, à l’inventaire et aux alertes ; redirection après connexion, navigation et accès direct protégés, avec contrôle complet conservé pour l’administrateur.
@@ -156,3 +172,17 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 - Alignement visuel et comportemental des filtres de rapports sur les filtres à facettes des tableaux, avec sélection cochée et action d’effacement.
 - Correction des références résiduelles des filtres de rapports afin de garantir leur compilation dans l’image frontend.
 - Suppression de l’import de séparateur de commande inutilisé afin de satisfaire la compilation TypeScript stricte du frontend.
+
+## Rapport académique Maarif Analytics
+
+- Rédaction française du rapport dans `PFE-Report-Template-Latex`, avec structure et identité du modèle conservées.
+- Ajout de schémas, d’une capture locale de connexion, d’une bibliographie vérifiée et d’une annexe de traçabilité.
+- Description fondée sur le code courant, y compris limites de concurrence, sessions, pagination et indicateurs ; informations administratives inconnues signalées.
+- Vérification Maven réussie avec Java 21 et configuration Compose validée ; deux intégrations PostgreSQL externes ignorées explicitement.
+
+### Révision du rapport d’après une référence académique
+
+- Réorganisation du rapport en cinq étapes : contexte, besoins, conception, réalisation et validation, en conservant la présentation LaTeX existante.
+- Suppression des descriptions internes et des formules détaillées ; technologies, besoins et résultats présentés de manière synthétique.
+- Ajout de captures locales sur données synthétiques, avec une présentation des fonctions centrée sur les écrans.
+- Aucun contenu métier du PDF de référence copié ; informations administratives inconnues conservées à compléter.
