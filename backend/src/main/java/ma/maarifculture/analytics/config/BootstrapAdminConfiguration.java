@@ -32,7 +32,10 @@ public class BootstrapAdminConfiguration implements ApplicationRunner {
     @Override @Transactional
     public void run(ApplicationArguments args) {
         if (email.isBlank() || password.isBlank() || users.existsByEmailIgnoreCase(email)) return;
-        if (password.length() < 12) throw new IllegalStateException("BOOTSTRAP_ADMIN_PASSWORD doit contenir au moins 12 caractères.");
+        if (password.length() < 12 || password.length() > 128
+                || !password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$")) {
+            throw new IllegalStateException("BOOTSTRAP_ADMIN_PASSWORD doit contenir 12 à 128 caractères, une minuscule, une majuscule et un chiffre.");
+        }
         users.save(new AppUser(fullName, email, encoder.encode(password), UserRole.ADMINISTRATOR));
     }
 }

@@ -14,9 +14,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.security.core.AuthenticationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(AuthenticationException.class)
     ResponseEntity<ApiError> handleAuthentication(AuthenticationException exception, HttpServletRequest request) {
@@ -69,6 +73,21 @@ public class GlobalExceptionHandler {
                 "La modification entre en conflit avec une donnée existante.",
                 request,
                 List.of());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiError> handleOversizedUpload(MaxUploadSizeExceededException exception, HttpServletRequest request) {
+        return error(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE",
+                "Le fichier envoyé dépasse la taille autorisée.", request, List.of());
+    }
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ApiError> handleUnexpected(Exception exception, HttpServletRequest request) {
+        Object requestId = request.getAttribute("X-Request-ID");
+        LOGGER.error("request_failed request_id={} method={} path={}", requestId,
+                request.getMethod(), request.getRequestURI(), exception);
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR",
+                "Une erreur interne est survenue.", request, List.of());
     }
 
     private ResponseEntity<ApiError> error(

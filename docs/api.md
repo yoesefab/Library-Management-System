@@ -11,7 +11,7 @@ Le client traite explicitement 401, 403, 404, 409, validation et erreurs serveur
 - Base `/api`, JSON UTF-8, pagination `page`/`size` (maximum 100).
 - Instants ISO 8601 en UTC; montants décimaux exacts.
 - Erreurs: `timestamp`, `status`, `code`, `message`, `path`, `violations`.
-- Sauf santé, métadonnées, Swagger et connexion, les routes exigent une session.
+- Sauf santé, métadonnées, Swagger et connexion, les routes exigent un JWT valide dans le cookie HttpOnly `ACCESS_TOKEN`.
 - Les mutations exigent le jeton CSRF retourné par `GET /api/auth/csrf`.
 
 ## Endpoints implémentés

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
+import jakarta.servlet.http.Cookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.ActiveProfiles;
@@ -42,32 +42,48 @@ class SecurityAuthorizationTest {
                 .andExpect(header().string("Access-Control-Allow-Origin", "http://127.0.0.1:5174"));
     }
 
-    @Test void createsHttpSessionAndEnforcesFinancialRole() throws Exception {
-        MockHttpSession session=(MockHttpSession)mockMvc.perform(post("/api/auth/login")
+    @Test void createsJwtCookieAndEnforcesFinancialRole() throws Exception {
+        Cookie accessToken=mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"stock@test.local\",\"password\":\"StrongPassword123!\"}"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.role").value("STOCK_EMPLOYEE"))
-                .andReturn().getRequest().getSession(false);
-        mockMvc.perform(get("/api/auth/me").session(session)).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("stock@test.local"));
-        mockMvc.perform(get("/api/dashboard").param("start","2026-01-01T00:00:00Z").param("end","2026-12-31T23:59:59Z").session(session))
+                .andReturn().getResponse().getCookie("ACCESS_TOKEN");
+        org.assertj.core.api.Assertions.assertThat(accessToken).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(accessToken.isHttpOnly()).isTrue();
+        org.assertj.core.api.Assertions.assertThat(accessToken.getValue().split("\\.")).hasSize(3);
+        mockMvc.perform(get("/api/auth/me").cookie(accessToken)).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("stock@test.local"));
+        mockMvc.perform(get("/api/dashboard").param("start","2026-01-01T00:00:00Z").param("end","2026-12-31T23:59:59Z").cookie(accessToken))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/products").session(session)).andExpect(status().isOk());
-        mockMvc.perform(get("/api/inventory").session(session)).andExpect(status().isOk());
-        mockMvc.perform(get("/api/alerts").session(session)).andExpect(status().isOk());
-        mockMvc.perform(post("/api/products").with(csrf()).session(session)
+        mockMvc.perform(get("/api/products").cookie(accessToken)).andExpect(status().isOk());
+        mockMvc.perform(get("/api/inventory").cookie(accessToken)).andExpect(status().isOk());
+        mockMvc.perform(get("/api/alerts").cookie(accessToken)).andExpect(status().isOk());
+        mockMvc.perform(post("/api/products").with(csrf()).cookie(accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"sku":"SECURITY-TEST","isbn":"","title":"Test synthétique","description":"","language":"fr","sellingPrice":10.00,"purchaseCost":null,"minimumStockThreshold":0,"supplierLeadTimeDays":null,"categoryId":null,"publisherId":null,"supplierId":null,"authorIds":[]}
                                 """))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/orders").session(session)).andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/imports").session(session)).andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/forecasting/recommendations").session(session)).andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/reports/inventory.csv").session(session)).andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/admin/settings").session(session)).andExpect(status().isForbidden());
-        mockMvc.perform(get("/api/admin/users").session(session)).andExpect(status().isForbidden());
-        mockMvc.perform(post("/api/admin/demo-data/catalog").with(csrf()).session(session))
+        mockMvc.perform(get("/api/orders").cookie(accessToken)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/imports").cookie(accessToken)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/forecasting/recommendations").cookie(accessToken)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/reports/inventory.csv").cookie(accessToken)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/admin/settings").cookie(accessToken)).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/admin/users").cookie(accessToken)).andExpect(status().isForbidden());
+        mockMvc.perform(post("/api/admin/demo-data/catalog").with(csrf()).cookie(accessToken))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(post("/api/auth/logout").with(csrf()).session(session)).andExpect(status().isNoContent());
+        mockMvc.perform(post("/api/auth/logout").with(csrf()).cookie(accessToken))
+                .andExpect(status().isNoContent())
+                .andExpect(cookie().maxAge("ACCESS_TOKEN", 0));
+    }
+
+    @Test void rejectsATamperedJwtSignature() throws Exception {
+        Cookie accessToken=mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"stock@test.local\",\"password\":\"StrongPassword123!\"}"))
+                .andExpect(status().isOk()).andReturn().getResponse().getCookie("ACCESS_TOKEN");
+        org.assertj.core.api.Assertions.assertThat(accessToken).isNotNull();
+        String value=accessToken.getValue();
+        accessToken.setValue(value.substring(0,value.length()-1)+(value.endsWith("a")?"b":"a"));
+        mockMvc.perform(get("/api/auth/me").cookie(accessToken)).andExpect(status().isUnauthorized());
     }
 }

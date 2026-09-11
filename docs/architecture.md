@@ -64,21 +64,22 @@ sequenceDiagram
     I-->>UI: Résultat
 ```
 
-## Authentication cible (jalon 4)
+## Authentification JWT
 
 ```mermaid
 sequenceDiagram
     actor U as Utilisateur
     participant B as Navigateur
     participant A as API Spring Security
-    participant S as Session store PostgreSQL
+    participant D as JwtDecoder
     U->>B: Email + mot de passe
     B->>A: POST /api/auth/login + jeton CSRF
     A->>A: Vérifier hash et état actif
-    A->>S: Créer session courte
-    A-->>B: Cookie Secure HttpOnly SameSite + profil
+    A->>A: Signer JWT HS256 court
+    A-->>B: Cookie ACCESS_TOKEN Secure HttpOnly SameSite + profil
     B->>A: Requête avec cookie + CSRF si mutation
-    A->>S: Charger session et rôles
+    A->>D: Vérifier signature, algorithme, issuer, audience et expiration
+    A->>A: Recharger l’utilisateur actif et ses rôles
     A-->>B: Réponse autorisée ou 401/403
 ```
 
