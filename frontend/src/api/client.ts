@@ -59,7 +59,7 @@ async function toApiError(response: Response) {
   })
 }
 
-export interface RequestOptions extends Omit<RequestInit, 'body'> {
+interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown
   raw?: boolean
 }

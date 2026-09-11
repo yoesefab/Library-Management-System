@@ -210,22 +210,6 @@ export const ORDERS = [
   },
 ]
 
-export function OrderStatus({ status }) {
-  const tone =
-    {
-      Livrée: 'delivered',
-      Expédiée: 'shipped',
-      'En préparation': 'processing',
-      Annulée: 'cancelled',
-      Brouillon: 'draft',
-    }[status] ?? 'draft'
-  return (
-    <span className={`catalog-status order-status order-status--${tone}`}>
-      {status}
-    </span>
-  )
-}
-
 const ORDER_DETAILS = {
   'CMD-2026-1841': {
     lines: [

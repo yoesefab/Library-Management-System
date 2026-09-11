@@ -4,6 +4,12 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ## [Non publié]
 
+### Préparation publique du dépôt
+
+- Ajout d’un état synthétique du projet et d’un guide de contribution à la documentation principale.
+- Suppression du contenu de démonstration hérité du modèle frontend (routes Clerk, tâches, messagerie, applications et réglages sans backend), ainsi que des fichiers, dépendances et métadonnées inutilisés.
+- Renommage du paquet frontend et régénération de l’arbre de routes afin que le dépôt ne présente que les parcours Maarif Analytics maintenus.
+
 - Génération et intégration de trois diagrammes de cas d’utilisation par profil et d’un diagramme de séquence d’authentification conforme à la session HTTP Spring Security du projet.
 
 - Développement modéré du rapport avec des compléments académiques sur le contexte, la démarche, le positionnement, la faisabilité, l’architecture, les données, les interfaces et l’interprétation des tests, sans ajouter de fonctionnalité au projet.

@@ -9,7 +9,7 @@ import type {
 } from '../types/api'
 import { apiRequest, queryString } from './client'
 
-export interface ProductFilters {
+interface ProductFilters {
   query?: string
   active?: boolean
   language?: string
