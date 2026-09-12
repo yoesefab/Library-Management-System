@@ -6,6 +6,7 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ### Préparation publique du dépôt
 
+- Recentrage du README sur la prise en main développeur : valeur du projet, démarrage rapide, exemples d’utilisation, configuration, aide et maintenance.
 - Ajout d’un état synthétique du projet et d’un guide de contribution à la documentation principale.
 - Suppression du contenu de démonstration hérité du modèle frontend (routes Clerk, tâches, messagerie, applications et réglages sans backend), ainsi que des fichiers, dépendances et métadonnées inutilisés.
 - Renommage du paquet frontend et régénération de l’arbre de routes afin que le dépôt ne présente que les parcours Maarif Analytics maintenus.
