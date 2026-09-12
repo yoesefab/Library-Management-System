@@ -28,6 +28,7 @@ Toutes les évolutions notables sont consignées ici selon l'esprit de Keep a Ch
 
 ### Documentation principale
 
+- Restructuration du README en guide de projet concis avec badges, fonctionnalités clés, stack technique, arborescence annotée, installation, commandes d'exécution, exemples d'API, contribution et clarification du périmètre de licence.
 - Réécriture complète du README pour refléter les fonctionnalités, le JWT, les workflows local/Hostinger, les migrations, les tests et le dépannage réellement implémentés.
 
 ### Authentification JWT
