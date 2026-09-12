@@ -1,350 +1,179 @@
-# Maarif Analytics
+# **Maarif Analytics — Pilotage des ventes et des stocks**
 
-Application web de démonstration pour le pilotage du catalogue, des ventes et des stocks de **Maarif Culture**.
+Une plateforme web complète pour administrer un catalogue, tracer les mouvements de stock et transformer les ventes en indicateurs, alertes et prévisions exploitables. Son monolithe en couches réunit une API Spring Boot sécurisée et une interface React responsive, prête pour Docker.
 
-Le dépôt contient une API Spring Boot, un client React et une base PostgreSQL. Il permet d’importer des ventes synthétiques, de tracer les mouvements de stock, de calculer des indicateurs, de produire des alertes et prévisions, puis d’exporter des rapports.
+![Java 21](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot 3.5](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?logo=springboot&logoColor=white)
+![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=0B1F33)
+![PostgreSQL 17](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Frontend license: MIT](https://img.shields.io/badge/frontend_license-MIT-green)
 
-> **Important :** les données de `sample-data/` sont fictives. Ne jamais connecter cette application au système de production de Maarif Culture sans autorisation explicite.
+> [!IMPORTANT]
+> Les fichiers de `sample-data/` sont entièrement fictifs. Ne connectez jamais l'application au système de production de Maarif Culture sans autorisation explicite.
 
-## Sommaire
+## 🚀 Features
 
-- [État du projet](#état-du-projet)
-- [Fonctionnalités](#fonctionnalités)
-- [Architecture et technologies](#architecture-et-technologies)
-- [Sécurité](#sécurité)
-- [Démarrage local avec Docker](#démarrage-local-avec-docker)
-- [Développement sans la pile complète](#développement-sans-la-pile-complète)
-- [Données de démonstration](#données-de-démonstration)
-- [Déploiement Hostinger VPS](#déploiement-hostinger-vps)
-- [Migrations et persistance](#migrations-et-persistance)
-- [Tests et vérifications](#tests-et-vérifications)
-- [Dépannage rapide](#dépannage-rapide)
-- [Documentation](#documentation)
-- [Contribution](#contribution)
+- **Catalogue centralisé** : Gérez produits multilingues, catégories, auteurs, éditeurs, fournisseurs, tarifs et visuels.
+- **Stock traçable** : Calculez le stock depuis les achats, ventes, retours, dommages et corrections, sans mise à jour silencieuse.
+- **Import de ventes fiable** : Prévisualisez et validez les CSV, bloquez les doublons et exportez les lignes rejetées.
+- **Aide à la décision** : Consultez les KPI, alertes, rotations, prévisions de demande et recommandations de réapprovisionnement.
+- **Sécurité par rôle** : Protégez les parcours administrateur, manager et employé de stock avec JWT HttpOnly, CSRF et autorisations backend.
+- **Exploitation prête à l'emploi** : Déployez PostgreSQL, Spring Boot, Nginx et Caddy avec Docker Compose, HTTPS et volumes persistants.
 
-## État du projet
+## 🛠️ Tech Stack
 
-Le projet constitue une démonstration complète, exécutable localement ou sur un VPS mono-instance. Les parcours métier documentés sont implémentés; les données fournies sont synthétiques et l'intégration au système réel reste volontairement hors périmètre.
-
-| Élément | État |
+| Domaine | Technologies principales |
 | --- | --- |
-| API, sécurité et persistance | Implémentés et couverts par les tests backend |
-| Interface métier responsive | Implémentée pour les trois rôles |
-| Données de démonstration | Incluses, fictives et rechargeables de façon idempotente |
-| Déploiement | Docker Compose avec HTTPS Caddy documenté |
-| Production Maarif Culture | Non connectée et non autorisée par défaut |
+| **Frontend** | React 19, TypeScript 6, Vite 8, Tailwind CSS 4, TanStack Router, Query et Table, Recharts, Radix UI |
+| **Backend** | Java 21, Spring Boot 3.5, Spring MVC, Spring Security, Spring Data JPA, Hibernate |
+| **Données** | PostgreSQL 17, Flyway, H2 pour certains tests |
+| **Sécurité** | JWT HS256 en cookie HttpOnly, protection CSRF, BCrypt, contrôle d'accès par rôle |
+| **Qualité** | Maven, JUnit, MockMvc, Testcontainers, Vitest, Playwright, ESLint, Prettier |
+| **Déploiement** | Docker Compose, Caddy, Nginx, health checks et volumes persistants |
 
-## Fonctionnalités
-
-### Catalogue et stock
-
-- produits multilingues avec SKU, ISBN, prix, coût, seuil de stock et délai fournisseur;
-- catégories hiérarchiques, auteurs, éditeurs et fournisseurs;
-- ajout d’images JPG, PNG ou WebP jusqu’à 5 Mo;
-- désactivation logique des produits afin de préserver leur historique;
-- stock courant dérivé des mouvements, sans modification silencieuse;
-- historique paginé des achats, ventes, retours, dommages et corrections.
-
-### Ventes et imports
-
-- création et consultation de commandes;
-- transitions de statut avec mouvements de vente ou de retour atomiques;
-- import CSV en deux étapes : prévisualisation, puis confirmation;
-- validation UTF-8, schéma exact, maximum 10 000 lignes et champs bornés;
-- détection des fichiers et commandes déjà traités;
-- rapport CSV des lignes rejetées.
-
-### Analyse et décision
-
-- KPI de chiffre d’affaires, commandes, unités et panier moyen;
-- valeur et rotation du stock;
-- produits les plus vendus et à faible rotation;
-- alertes de rupture, stock faible, rotation lente et stock dormant;
-- prévisions de demande et recommandations de réapprovisionnement explicables;
-- exports d’inventaire en CSV et rapport de gestion en PDF.
-
-### Administration
-
-- comptes utilisateurs actifs ou désactivés;
-- rôles administrateur, manager et employé de stock;
-- paramètres métier configurables;
-- journal d’audit des opérations sensibles.
-
-## Architecture et technologies
-
-Maarif Analytics reste volontairement un **monolithe en couches** adapté à un petit projet et à un déploiement VPS mono-instance.
-
-```text
-Navigateur
-    │ HTTPS
-    ▼
-Caddy :80/:443
-    │
-    ▼
-Nginx + React :80 (réseau Docker privé)
-    │ /api
-    ▼
-Spring Boot :8080 (réseau Docker privé)
-    │
-    ▼
-PostgreSQL :5432 (réseau Docker privé)
-```
+## 📂 Repository Structure
 
 ```text
 Library-Management-System/
-├── backend/                    API Java et migrations Flyway
-├── frontend/                   client React/TypeScript et Nginx
-├── docs/                       documentation fonctionnelle et technique
-├── sample-data/                fichiers exclusivement synthétiques
-├── Caddyfile                   reverse proxy HTTPS
-├── docker-compose.yml          déploiement Hostinger/VPS
-├── docker-compose.dev.yml      surcharge pour le développement local
-└── .env.example                variables attendues sans secret réel
+├── backend/
+│   ├── src/main/java/              # API et monolithe en couches
+│   ├── src/main/resources/         # Configuration et migrations Flyway
+│   ├── src/test/                   # Tests unitaires et d'intégration
+│   └── pom.xml                     # Build Maven et dépendances Java
+├── frontend/
+│   ├── src/api/                    # Client HTTP typé
+│   ├── src/components/             # Composants UI partagés
+│   ├── src/features/               # Parcours métier React
+│   └── package.json                # Scripts et dépendances frontend
+├── docs/                           # Architecture, API, sécurité et exploitation
+├── sample-data/                    # Catalogue et ventes synthétiques
+├── .env.example                    # Modèle de configuration sans secret réel
+├── Caddyfile                       # Terminaison HTTPS en production
+├── docker-compose.yml              # Pile de production
+├── docker-compose.dev.yml          # Surcharge locale
+├── CONTRIBUTING.md                 # Règles de contribution
+└── CHANGELOG.md                    # Historique des évolutions
 ```
 
-Le backend suit le sens de dépendance suivant :
+- **`backend/`** suit la chaîne `controller → service → repository → model`, avec DTO et mappers explicites.
+- **`frontend/`** contient l'interface approuvée, ses appels API et ses tests navigateur.
+- **`docs/`** détaille les choix d'architecture, les endpoints, la sécurité, les KPI et le déploiement.
+- **`sample-data/`** fournit uniquement des jeux de démonstration réutilisables localement.
 
-```text
-controller → service → repository → model
-     │           │
-     ▼           ▼
-    dto        mapper
+## 🏁 Getting Started
+
+### Prerequisites
+
+Pour le parcours recommandé :
+
+- Docker Engine **>= 24** ;
+- Docker Compose **>= 2.20** ;
+- Git **>= 2.40** ;
+- OpenSSL **>= 3** pour générer le secret JWT ;
+- ports `5432`, `8080` et `5173` disponibles en local.
+
+Pour exécuter les services hors conteneurs, installez également Java **21**, Node.js **>= 22** et pnpm **10.32.1**.
+
+### Installation
+
+1. Clonez le dépôt et ouvrez son répertoire :
+
+```bash
+git clone <repository-url>
+cd Library-Management-System
 ```
 
-Les contrôleurs restent minces, les transactions et règles métier vivent dans les services, les repositories encapsulent la persistance et les entités JPA ne sont jamais retournées directement par l’API.
+2. Créez votre configuration locale depuis le modèle versionné :
 
-| Domaine          | Technologies                                                    |
-| ---------------- | --------------------------------------------------------------- |
-| Backend          | Java 21, Spring Boot 3, Spring MVC, Spring Security             |
-| Données          | Spring Data JPA, Hibernate, PostgreSQL 17, Flyway               |
-| Frontend         | React 19, TypeScript, Vite, TanStack Router/Query, Tailwind CSS |
-| Authentification | JWT HS256 en cookie HttpOnly et protection CSRF                 |
-| Tests            | JUnit, MockMvc, H2, Testcontainers, Vitest, Playwright          |
-| Déploiement      | Docker Compose, Caddy, Nginx                                    |
+```bash
+cp .env.example .env
+chmod 600 .env
+```
 
-## Sécurité
-
-### Authentification JWT
-
-- `POST /api/auth/login` vérifie l’adresse e-mail, le mot de passe BCrypt et l’état du compte;
-- le backend émet un JWT HS256 court dans le cookie `ACCESS_TOKEN`;
-- le cookie est `HttpOnly`, `SameSite=Strict` et `Secure` avec le profil `prod`;
-- le JWT n’est jamais stocké dans `localStorage` ou `sessionStorage`;
-- la signature, l’algorithme, l’issuer, l’audience, l’expiration et les claims requis sont vérifiés;
-- l’utilisateur et ses rôles sont rechargés depuis PostgreSQL à chaque requête;
-- une modification d’e-mail renouvelle le JWT;
-- la déconnexion et le changement de mot de passe suppriment le cookie;
-- aucun refresh token n’est utilisé; la durée par défaut de l’access token est de 15 minutes.
-
-Les mutations utilisent également un cookie `XSRF-TOKEN` et l’en-tête `X-XSRF-TOKEN`. Cette protection reste nécessaire parce que le navigateur joint automatiquement le cookie JWT.
-
-Générez toujours une clé différente pour chaque environnement :
+3. Générez un secret, puis renseignez `.env` avec des valeurs réservées au développement :
 
 ```bash
 openssl rand -base64 32
 ```
 
-Placez uniquement le résultat dans `JWT_SECRET` du fichier `.env`. Ne commitez jamais cette valeur.
-
-### Autorisation par rôle
-
-| Capacité                                        | Administrateur | Manager | Employé de stock |
-| ----------------------------------------------- | :------------: | :-----: | :--------------: |
-| Catalogue et inventaire en lecture              |       ✓        |    ✓    |        ✓         |
-| Mouvements de stock et alertes                  |       ✓        |    ✓    |        ✓         |
-| Modification du catalogue                       |       ✓        |    ✓    |        —         |
-| KPI, commandes, imports, prévisions et rapports |       ✓        |    ✓    |        —         |
-| Utilisateurs, paramètres et audit               |       ✓        |    —    |        —         |
-
-L’interface masque les actions indisponibles, mais les annotations `@PreAuthorize` du backend restent l’autorité.
-
-### Protections complémentaires
-
-- limitation locale par adresse pour la connexion, les téléversements et les calculs coûteux;
-- CSRF, CORS avec origines explicites et en-têtes HTTP défensifs;
-- identifiant `X-Request-ID` sur les réponses;
-- validation Bean Validation et rejet des propriétés JSON inconnues;
-- erreurs client sans stack trace ni détail SQL;
-- images stockées hors du répertoire web avec nom généré et vérification de signature;
-- exports CSV protégés contre l’injection de formules.
-
-Le limiteur est adapté à l’unique backend du déploiement Hostinger. Redis n’est pas nécessaire tant que plusieurs instances ne sont pas exécutées.
-
-## Démarrage local avec Docker
-
-### Prérequis
-
-- Docker Engine;
-- Docker Compose v2;
-- ports locaux `5432`, `8080` et `5173` disponibles.
-
-### 1. Préparer l’environnement
-
-```bash
-cp .env.example .env
-chmod 600 .env
+```dotenv
+POSTGRES_PASSWORD=replace-with-a-long-local-password
+BOOTSTRAP_ADMIN_EMAIL=admin@example.test
+BOOTSTRAP_ADMIN_PASSWORD=ReplaceWithAStrongPassword123
+JWT_SECRET=replace-with-the-generated-base64-value
+DEMO_DATA_ENABLED=true
 ```
 
-Remplacez au minimum :
+4. Si vous développez sans Docker, installez les dépendances frontend :
 
-- `POSTGRES_PASSWORD`;
-- `BOOTSTRAP_ADMIN_EMAIL`;
-- `BOOTSTRAP_ADMIN_PASSWORD`;
-- `JWT_SECRET`, généré avec `openssl rand -base64 32`.
+```bash
+cd frontend
+corepack enable
+corepack prepare pnpm@10.32.1 --activate
+pnpm install --frozen-lockfile
+cd ..
+```
 
-Pour charger le catalogue synthétique, utilisez `DEMO_DATA_ENABLED=true`. Le mot de passe administrateur doit contenir 12 à 128 caractères, dont une minuscule, une majuscule et un chiffre.
+Le Maven Wrapper de `backend/` télécharge automatiquement la version Maven attendue.
 
-### 2. Démarrer la pile locale
+### Running the Application
+
+Lancez toute la pile locale :
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
-La surcharge de développement expose seulement les interfaces loopback et n’exécute pas Caddy.
+| Service | URL locale |
+| --- | --- |
+| Application | <http://localhost:5173> |
+| API | <http://localhost:8080/api> |
+| Swagger UI | <http://localhost:8080/swagger-ui.html> |
+| Health check | <http://localhost:8080/actuator/health> |
 
-| Service       | Adresse locale                          |
-| ------------- | --------------------------------------- |
-| Application   | <http://localhost:5173>                 |
-| Santé backend | <http://localhost:8080/actuator/health> |
-| Swagger UI    | <http://localhost:8080/swagger-ui.html> |
-| OpenAPI       | <http://localhost:8080/v3/api-docs>     |
-| PostgreSQL    | `localhost:5432`                        |
-
-### 3. Arrêter la pile
+Pour un développement séparé, démarrez PostgreSQL, puis lancez les deux applications :
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+POSTGRES_PASSWORD='local-password' \
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db
 ```
-
-Les volumes sont conservés. N’ajoutez `--volumes` que si vous souhaitez supprimer définitivement la base locale, les images et les certificats.
-
-## Développement sans la pile complète
-
-### PostgreSQL seulement
-
-```bash
-POSTGRES_PASSWORD='mot-de-passe-local' docker compose \
-  -f docker-compose.yml -f docker-compose.dev.yml up -d db
-```
-
-### Backend
 
 ```bash
 JWT_SECRET="$(openssl rand -base64 32)" \
 DB_URL='jdbc:postgresql://localhost:5432/maarif_analytics' \
 POSTGRES_USER='maarif' \
-POSTGRES_PASSWORD='mot-de-passe-local' \
+POSTGRES_PASSWORD='local-password' \
 BOOTSTRAP_ADMIN_EMAIL='admin@example.test' \
-BOOTSTRAP_ADMIN_PASSWORD='MotDePasseLocal123' \
+BOOTSTRAP_ADMIN_PASSWORD='StrongLocalPassword123' \
 DEMO_DATA_ENABLED='true' \
 ./backend/mvnw -f backend/pom.xml spring-boot:run
 ```
 
-Le backend écoute sur <http://localhost:8080>. Flyway applique les migrations, puis Hibernate vérifie le schéma sans le modifier.
-
-### Frontend
-
 ```bash
 cd frontend
-pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Vite écoute sur <http://127.0.0.1:5174> et relaie `/api` vers <http://127.0.0.1:8080>. Une autre API peut être sélectionnée avec :
-
-```bash
-MAARIF_API_TARGET='http://127.0.0.1:9090' pnpm dev
-```
-
-### Appeler l’API directement
-
-Un client HTTP doit conserver les deux cookies et envoyer le token CSRF lors des mutations :
-
-1. `GET /api/auth/csrf` pour recevoir `XSRF-TOKEN`;
-2. `POST /api/auth/login` avec `email` et `password`;
-3. conserver le cookie HttpOnly `ACCESS_TOKEN`;
-4. envoyer la valeur CSRF dans `X-XSRF-TOKEN` pour les requêtes `POST`, `PUT`, `PATCH` et `DELETE` autres que la connexion.
-
-## Données de démonstration
-
-Le chargeur est disponible uniquement avec `DEMO_DATA_ENABLED=true` et pour un administrateur :
-
-```http
-POST /api/admin/demo-data/catalog
-```
-
-Il ajoute un catalogue synthétique, les référentiels associés, les images de démonstration et les mouvements de stock initiaux sans recréer les SKU déjà présents.
-
-Parcours conseillé :
-
-1. charger le catalogue de démonstration;
-2. prévisualiser `sample-data/sales-invalid.csv`;
-3. télécharger et examiner son rapport d’erreurs;
-4. prévisualiser puis confirmer `sample-data/sales-valid.csv`;
-5. consulter le stock, le dashboard et les alertes;
-6. générer une prévision et une recommandation;
-7. exporter les rapports CSV et PDF;
-8. consulter le journal d’audit.
-
-## Déploiement Hostinger VPS
-
-Le fichier `docker-compose.yml` est prévu pour une instance Hostinger/VPS :
-
-- Caddy est le seul service exposé sur `80/tcp`, `443/tcp` et `443/udp`;
-- le frontend, le backend et PostgreSQL restent sur le réseau Docker privé;
-- PostgreSQL, les images produit et les certificats Caddy utilisent des volumes persistants;
-- tous les services ont un health check et `restart: unless-stopped`;
-- les logs Docker sont limités à trois fichiers de 10 Mo par conteneur;
-- Caddy obtient et renouvelle automatiquement le certificat du domaine.
-
-Variables obligatoires :
-
-| Variable                   | Description                                          |
-| -------------------------- | ---------------------------------------------------- |
-| `APP_DOMAIN`               | Domaine pointant vers l’IPv4 du VPS, sans `https://` |
-| `ACME_EMAIL`               | Adresse utilisée par Caddy pour les certificats      |
-| `POSTGRES_PASSWORD`        | Mot de passe PostgreSQL unique                       |
-| `BOOTSTRAP_ADMIN_EMAIL`    | Adresse du premier administrateur                    |
-| `BOOTSTRAP_ADMIN_PASSWORD` | Mot de passe initial fort                            |
-| `JWT_SECRET`               | Clé Base64 aléatoire d’au moins 256 bits             |
-
-Déploiement :
-
-```bash
-cp .env.example .env
-chmod 600 .env
-# Modifier .env avant de continuer
-docker compose config --quiet
-docker compose build --pull
-docker compose up -d
-docker compose ps
-```
-
-Le domaine doit pointer vers le VPS et les ports 80/443 doivent être ouverts avant le démarrage de Caddy. La procédure complète, incluant DNS, pare-feu, sauvegarde, restauration, mises à jour et dépannage, se trouve dans [`docs/hostinger-vps-deployment.md`](docs/hostinger-vps-deployment.md).
-
-## Migrations et persistance
-
-Flyway applique automatiquement les migrations de `backend/src/main/resources/db/migration/` au démarrage. Les migrations déjà appliquées sont immuables : toute évolution doit utiliser un nouveau fichier versionné.
-
-Volumes de production :
-
-| Volume           | Contenu                     |
-| ---------------- | --------------------------- |
-| `postgres-data`  | données PostgreSQL          |
-| `product-images` | images des produits         |
-| `caddy-data`     | certificats et état ACME    |
-| `caddy-config`   | configuration runtime Caddy |
-
-Un volume Docker n’est pas une sauvegarde. Exportez régulièrement PostgreSQL avec `pg_dump`, archivez `product-images`, copiez les sauvegardes hors du VPS et testez leur restauration. Les commandes sont détaillées dans le guide Hostinger.
-
-## Tests et vérifications
-
-### Backend et infrastructure
-
-Depuis la racine :
+Construisez et vérifiez le projet :
 
 ```bash
 ./backend/mvnw -f backend/pom.xml verify
+```
+
+```bash
+cd frontend
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm knip
+```
+
+Validez enfin la configuration de déploiement :
+
+```bash
 POSTGRES_PASSWORD=local-verification-only \
 APP_DOMAIN=analytics.example.test \
 ACME_EMAIL=admin@example.test \
@@ -352,83 +181,52 @@ JWT_SECRET=MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY= \
 docker compose config
 ```
 
-`verify` exécute les tests unitaires et les tests d’intégration configurés. Testcontainers et les tests PostgreSQL nécessitent Docker.
+## 💡 Usage Examples
 
-### Frontend
+### Charger le catalogue synthétique
 
-```bash
-cd frontend
-npm run format:check
-npm run lint
-npm run typecheck
-npm test
-npm run build
-```
-
-Les tests Vitest utilisent Chromium via Playwright. Installez-le si nécessaire :
+Connectez-vous en tant qu'administrateur, récupérez le cookie CSRF, puis chargez les données de démonstration. `curl` conserve ici les cookies JWT et CSRF entre les requêtes.
 
 ```bash
-npm run test:browser:install
+curl --cookie-jar cookies.txt http://localhost:8080/api/auth/csrf
+XSRF_TOKEN="$(awk '$6 == "XSRF-TOKEN" { print $7 }' cookies.txt)"
+
+curl --cookie cookies.txt --cookie-jar cookies.txt \
+  --header 'Content-Type: application/json' \
+  --header "X-XSRF-TOKEN: ${XSRF_TOKEN}" \
+  --data '{"email":"admin@example.test","password":"StrongLocalPassword123"}' \
+  http://localhost:8080/api/auth/login
+
+curl --cookie cookies.txt \
+  --header "X-XSRF-TOKEN: ${XSRF_TOKEN}" \
+  --request POST \
+  http://localhost:8080/api/admin/demo-data/catalog
 ```
 
-## Dépannage rapide
-
-### Le backend ne démarre pas
-
-Vérifiez :
-
-- que `JWT_SECRET` est un Base64 valide représentant au moins 32 octets;
-- que le mot de passe bootstrap respecte la politique;
-- que PostgreSQL est healthy;
-- qu’aucune migration Flyway existante n’a été modifiée;
-- que le disque contient assez d’espace.
+### Inspecter la santé du backend
 
 ```bash
-docker compose logs --tail=200 backend db
+curl --fail --silent http://localhost:8080/actuator/health
 ```
 
-### Erreur HTTPS ou certificat
-
-Vérifiez que `APP_DOMAIN` résout vers le VPS, que les ports 80/443 sont libres et que le pare-feu les autorise :
-
-```bash
-docker compose logs --tail=200 caddy
+```json
+{"status":"UP"}
 ```
 
-### Erreur 502
+Le parcours métier complet — import CSV, consultation des alertes, prévisions et exports — est décrit dans le [guide utilisateur](docs/user-guide.md). Les contrats HTTP figurent dans la [documentation API](docs/api.md).
 
-```bash
-docker compose ps
-docker compose logs --tail=200 caddy frontend backend
-```
+## 🤝 Contributing
 
-### Réinitialiser complètement l’environnement local
+1. Forkez le dépôt et ouvrez une issue ciblée.
+2. Créez une branche courte, par exemple `feat/import-validation`, `fix/stock-alerts` ou `docs/api-examples`.
+3. Respectez l'architecture en couches, ajoutez les tests pertinents et consignez tout changement notable dans `CHANGELOG.md`.
+4. Exécutez les vérifications backend, frontend et Compose applicables.
+5. Ouvrez une pull request avec un résumé, les résultats des tests et les impacts éventuels sur la sécurité, les données ou le déploiement.
 
-```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down --volumes
-```
+Consultez [`CONTRIBUTING.md`](CONTRIBUTING.md) et [`AGENTS.md`](AGENTS.md) avant toute modification importante. Utilisez uniquement des données fictives et ne commitez jamais `.env`, mot de passe, jeton, secret ou donnée personnelle réelle.
 
-Cette commande détruit toutes les données locales. Ne jamais l’utiliser sur le VPS de production.
+## 📄 License
 
-## Documentation
+Le client React réutilisé est distribué sous **licence MIT**. Cette licence autorise l'utilisation, la copie, la modification, la distribution, la sous-licence et la vente, sous réserve de conserver la notice de copyright et la licence. Consultez [`frontend/LICENSE`](frontend/LICENSE) et [`frontend/THIRD_PARTY_NOTICES.md`](frontend/THIRD_PARTY_NOTICES.md).
 
-| Document                                                  | Contenu                               |
-| --------------------------------------------------------- | ------------------------------------- |
-| [Guide utilisateur](docs/user-guide.md)                   | connexion et parcours métier          |
-| [Architecture](docs/architecture.md)                      | couches, flux et décisions techniques |
-| [API](docs/api.md)                                        | endpoints et conventions HTTP         |
-| [Base de données](docs/database.md)                       | modèle, contraintes et migrations     |
-| [Sécurité](docs/security.md)                              | JWT, CSRF, rôles et protections       |
-| [Audit sécurité](docs/security-audit.md)                  | évaluation et risques résiduels       |
-| [Déploiement](docs/deployment.md)                         | vue générale des conteneurs           |
-| [Déploiement Hostinger](docs/hostinger-vps-deployment.md) | procédure VPS complète                |
-| [Tests](docs/testing.md)                                  | stratégie et commandes                |
-| [Prévisions](docs/forecasting.md)                         | méthodes et limites analytiques       |
-| [Définitions des KPI](docs/kpi-definitions.md)            | formules des indicateurs              |
-| [Journal de décisions](docs/decision-log.md)              | décisions d’architecture              |
-
-Les changements livrés sont consignés dans [`CHANGELOG.md`](CHANGELOG.md).
-
-## Contribution
-
-Les propositions sont bienvenues. Lisez [`CONTRIBUTING.md`](CONTRIBUTING.md) pour installer l'environnement, respecter les règles d'architecture et exécuter les vérifications attendues. Les mentions et licences des composants réutilisés par le client sont conservées dans [`frontend/LICENSE`](frontend/LICENSE) et [`frontend/THIRD_PARTY_NOTICES.md`](frontend/THIRD_PARTY_NOTICES.md).
+Le dépôt ne contient actuellement aucune licence racine couvrant explicitement l'ensemble du backend et de la documentation. En l'absence d'une telle licence, leurs droits restent réservés ; contactez les mainteneurs avant toute réutilisation ou redistribution.
