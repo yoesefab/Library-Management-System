@@ -1,5 +1,5 @@
 {
-  "name": "maarif-analytics-prototype2",
+  "name": "maarif-analytics-frontend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -20,9 +20,6 @@
     "test:browser:install": "playwright install chromium --with-deps"
   },
   "dependencies": {
-    "@base-ui/react": "^1.7.0",
-    "@clerk/react": "^6.4.3",
-    "@fontsource/manrope": "^5.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -41,7 +38,6 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-switch": "^1.2.6",
-    "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.99.0",
@@ -53,7 +49,6 @@
     "cmdk": "1.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
-    "input-otp": "^1.4.2",
     "lucide-react": "^1.8.0",
     "react": "^19.2.5",
     "react-day-picker": "9.14.0",
@@ -70,10 +65,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@faker-js/faker": "^10.4.0",
     "@tanstack/eslint-plugin-query": "^5.99.0",
-    "@tanstack/react-query-devtools": "^5.99.0",
-    "@tanstack/react-router-devtools": "^1.166.13",
     "@tanstack/router-plugin": "^1.167.22",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^25.6.0",
